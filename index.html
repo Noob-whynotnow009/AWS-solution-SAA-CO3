@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: var(--color-background-primary);
+    --bg2: var(--color-background-secondary);
+    --bg3: var(--color-background-tertiary);
+    --text: var(--color-text-primary);
+    --muted: var(--color-text-secondary);
+    --hint: var(--color-text-tertiary);
+    --border: var(--color-border-tertiary);
+    --border2: var(--color-border-secondary);
+    --rad: var(--border-radius-md);
+    --rad-lg: var(--border-radius-lg);
+    --aws-orange: #FF9900;
+    --aws-dark: #232F3E;
+    --cost-trap: #E24B4A;
+    --cost-champ: #1D9E75;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--text);
+    background: transparent;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .hero {
+    background: var(--aws-dark);
+    border-radius: var(--rad-lg);
+    padding: 24px 28px 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: #FF9900;
+    opacity: 0.08;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,153,0,0.15);
+    border: 0.5px solid rgba(255,153,0,0.4);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: #FF9900;
+    font-weight: 500;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Syne', var(--font-sans);
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    max-width: 540px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    background: rgba(255,255,255,0.07);
+    border-radius: var(--rad);
+    padding: 8px 14px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+  }
+  .hero-stat strong {
+    color: #FF9900;
+    font-weight: 600;
+    display: block;
+    font-size: 18px;
+  }
+
+  .toc-section {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--rad-lg);
+    padding: 18px 20px;
+    margin-bottom: 20px;
+  }
+  .toc-section h2 {
+    font-family: 'Syne', var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: var(--rad);
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--muted);
+    border: 0.5px solid transparent;
+    transition: all 0.15s;
+  }
+  .toc-item:hover {
+    background: var(--bg3);
+    border-color: var(--border2);
+    color: var(--text);
+  }
+  .toc-num {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--aws-orange);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--aws-dark);
+    color: #FF9900;
+    border-color: rgba(255,153,0,0.4);
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg2);
+    border: 0.5px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 14px;
+  }
+  .search-bar input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 13px;
+    font-family: var(--font-sans);
+    outline: none;
+  }
+  .search-bar input::placeholder { color: var(--hint); }
+
+  .category-block { margin-bottom: 28px; }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .cat-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--aws-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .cat-title {
+    font-family: 'Syne', var(--font-sans);
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .cat-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--hint);
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 8px;
+  }
+
+  .service-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--rad-lg);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .service-card:hover { border-color: var(--border2); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .card-header:hover { background: var(--bg2); }
+
+  .svc-name {
+    font-family: 'Syne', var(--font-sans);
+    font-weight: 700;
+    font-size: 15px;
+    flex: 1;
+  }
+  .svc-sub {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    font-weight: 400;
+    font-family: var(--font-sans);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+  }
+  .badge-trap {
+    background: rgba(226,75,74,0.12);
+    color: #E24B4A;
+    border: 0.5px solid rgba(226,75,74,0.3);
+  }
+  .badge-champ {
+    background: rgba(29,158,117,0.12);
+    color: #1D9E75;
+    border: 0.5px solid rgba(29,158,117,0.3);
+  }
+
+  .chevron {
+    width: 18px; height: 18px;
+    color: var(--hint);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .card-header.open .chevron { transform: rotate(90deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 0.5px solid var(--border);
+  }
+  .card-body.open { display: block; }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 14px;
+    border-bottom: 0.5px solid var(--border);
+    margin-top: 14px;
+  }
+  .tab {
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -0.5px;
+    transition: all 0.15s;
+  }
+  .tab.active {
+    color: var(--aws-orange);
+    border-bottom-color: var(--aws-orange);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .what-box {
+    background: var(--bg2);
+    border-radius: var(--rad);
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .scenario-box {
+    background: var(--bg2);
+    border-left: 3px solid var(--aws-orange);
+    border-radius: 0 var(--rad) var(--rad) 0;
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 8px;
+  }
+  .scenario-box strong { color: var(--aws-orange); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
+
+  .arch-flow {
+    background: var(--aws-dark);
+    border-radius: var(--rad);
+    padding: 12px 14px;
+    font-family: 'JetBrains Mono', var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.8;
+    margin-bottom: 2px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .arch-flow .hl { color: #FF9900; }
+  .arch-flow .grn { color: #5DCAA5; }
+  .arch-flow .blu { color: #85B7EB; }
+
+  .cost-tips { list-style: none; }
+  .cost-tips li {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .cost-tips li:last-child { border-bottom: none; }
+  .cost-dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(255,153,0,0.15);
+    border: 0.5px solid rgba(255,153,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: var(--aws-orange);
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+
+  .alt-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .alt-table th {
+    text-align: left;
+    padding: 6px 10px;
+    background: var(--bg2);
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 11px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .alt-table th:first-child { border-radius: var(--rad) 0 0 0; }
+  .alt-table th:last-child { border-radius: 0 var(--rad) 0 0; }
+  .alt-table td {
+    padding: 7px 10px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .alt-table tr:last-child td { border-bottom: none; }
+  .alt-table .svc-tag {
+    display: inline-block;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'JetBrains Mono', var(--font-mono);
+    font-size: 11px;
+    color: var(--aws-orange);
+    font-weight: 600;
+  }
+  .cheaper { color: #1D9E75; font-size: 11px; font-weight: 600; }
+  .pricier { color: #E24B4A; font-size: 11px; font-weight: 600; }
+  .same { color: var(--muted); font-size: 11px; font-weight: 600; }
+
+  /* Cost Cheat Sheet */
+  .cheat-section {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--rad-lg);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .cheat-header {
+    background: var(--aws-dark);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .cheat-header h3 {
+    font-family: 'Syne', var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    flex: 1;
+  }
+  .cheat-body { padding: 16px 18px; }
+
+  .decision-matrix { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 4px; }
+  .decision-matrix th {
+    background: var(--bg2);
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .decision-matrix td {
+    padding: 8px 10px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+    font-size: 12px;
+  }
+  .decision-matrix tr:last-child td { border-bottom: none; }
+  .type-od { color: #E24B4A; font-weight: 600; }
+  .type-ri { color: #1D9E75; font-weight: 600; }
+  .type-sp { color: #FF9900; font-weight: 600; }
+
+  /* Quick decision framework */
+  .flow-wrap {
+    background: var(--aws-dark);
+    border-radius: var(--rad-lg);
+    padding: 20px;
+    font-family: 'JetBrains Mono', var(--font-mono);
+    font-size: 11px;
+    color: rgba(255,255,255,0.75);
+    line-height: 2;
+    overflow-x: auto;
+    white-space: pre;
+    margin-bottom: 20px;
+  }
+  .flow-wrap .q  { color: #85B7EB; }
+  .flow-wrap .a  { color: #5DCAA5; }
+  .flow-wrap .svc { color: #FF9900; font-weight: 700; }
+  .flow-wrap .hr { color: rgba(255,255,255,0.2); }
+
+  .overlap-box {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--rad-lg);
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .overlap-box h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--aws-orange);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .overlap-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .overlap-item {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--rad);
+    padding: 10px 12px;
+  }
+  .overlap-item h4 { font-size: 12px; font-weight: 600; color: var(--aws-orange); margin-bottom: 4px; }
+  .overlap-item p { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 8px 0 8px;
+    z-index: 100;
+    margin-bottom: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .sticky-nav { background: rgba(30,30,30,0.95); }
+  }
+
+  .jump-bar {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .jump-btn {
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-size: 10px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.12s;
+  }
+  .jump-btn:hover { background: var(--bg2); color: var(--text); }
+
+  .section-anchor { scroll-margin-top: 60px; }
+
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    color: var(--hint);
+    font-family: 'JetBrains Mono', var(--font-mono);
+  }
+
+  .no-results { text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">⬡ AWS Solutions Architect</div>
+  <h1>AWS Service Reference Guide</h1>
+  <p>Comprehensive architecture patterns, cost optimization, and trade-offs for every major AWS service category.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>12</strong>Categories</div>
+    <div class="hero-stat"><strong>40+</strong>Services</div>
+    <div class="hero-stat"><strong>120+</strong>Cost Tips</div>
+    <div class="hero-stat"><strong>60+</strong>Trade-off Tables</div>
+  </div>
+</div>
+
+<div class="sticky-nav">
+  <div class="jump-bar" id="jumpBar"></div>
+</div>
+
+<div class="toc-section">
+  <h2>Table of Contents</h2>
+  <div class="toc-grid" id="tocGrid"></div>
+</div>
+
+<div class="search-bar">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--hint);flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+  <input type="text" placeholder="Search services, categories, use cases..." id="searchInput" oninput="filterServices(this.value)">
+</div>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" onclick="setFilter('all',this)">All Services</button>
+  <button class="filter-btn badge-trap" onclick="setFilter('trap',this)">⚠️ Cost Traps</button>
+  <button class="filter-btn badge-champ" onclick="setFilter('champ',this)">✅ Cost Champions</button>
+</div>
+
+<div id="servicesContainer"></div>
+
+<div id="cheatSheet"></div>
+<div id="decisionFlow"></div>
+
+<script>
+const CATEGORIES = [
+  { id: 'compute', icon: '⚡', name: 'Compute' },
+  { id: 'storage', icon: '💾', name: 'Storage' },
+  { id: 'database', icon: '🗄️', name: 'Database' },
+  { id: 'networking', icon: '🌐', name: 'Networking' },
+  { id: 'security', icon: '🔐', name: 'Security & Identity' },
+  { id: 'messaging', icon: '📨', name: 'Messaging & Integration' },
+  { id: 'analytics', icon: '📊', name: 'Analytics & Big Data' },
+  { id: 'devops', icon: '🔧', name: 'Developer & DevOps' },
+  { id: 'monitoring', icon: '🔍', name: 'Monitoring & Management' },
+  { id: 'aiml', icon: '🤖', name: 'AI / ML' },
+  { id: 'edge', icon: '🌍', name: 'Edge & IoT' },
+  { id: 'migration', icon: '🚚', name: 'Migration' },
+];
+
+const SERVICES = [
+  // COMPUTE
+  {
+    id: 'ec2', cat: 'compute', name: 'EC2', sub: 'Elastic Compute Cloud',
+    trap: true, champ: false,
+    tags: ['vm','instances','auto-scaling','spot'],
+    what: 'EC2 provides resizable virtual machines in the cloud — choose from 400+ instance types optimized for compute, memory, storage, or GPU workloads. You get full OS-level control with configurable networking, storage, and security groups. It forms the foundation for most lift-and-shift migrations.',
+    scenario: '<strong>Scenario</strong>A SaaS company runs a REST API serving 50,000 daily users with traffic peaks at 2pm–4pm. They use an Auto Scaling Group behind an ALB: 3 baseline t3.medium On-Demand instances scale up to 12 during peaks. Spot instances handle burst compute at 70% savings. Monthly baseline cost: ~$180, peak overhead: ~$45.',
+    arch: `<span class="hl">User Requests</span>
+   ↓
+<span class="blu">Route 53</span> (DNS) → <span class="grn">ALB</span> (Application Load Balancer)
+   ↓
+<span class="hl">Auto Scaling Group</span>
+   ├── <span class="grn">On-Demand</span>: t3.medium × 3 (baseline)
+   └── <span class="hl">Spot Fleet</span>: c5.xlarge × 0–9 (burst)
+   ↓
+<span class="blu">RDS</span> (Multi-AZ) + <span class="blu">ElastiCache</span> (read cache)`,
+    costs: [
+      'Use Compute Savings Plans (1-yr) for baseline: up to 66% off On-Demand. Combine with Spot for non-critical burst workloads.',
+      'Right-size with AWS Compute Optimizer — teams routinely discover 40–60% of EC2 instances are >50% over-provisioned.',
+      'Stop dev/staging EC2 instances nights/weekends with EventBridge Scheduler — saves ~65% on non-production spend.',
+    ],
+    alts: [
+      { name: 'Lambda', when: 'Stateless, event-driven workloads < 15 min runtime', cost: 'cheaper' },
+      { name: 'ECS Fargate', when: 'Containers without EC2 fleet management overhead', cost: 'pricier' },
+      { name: 'Lightsail', when: 'Simple apps/blogs with predictable low traffic', cost: 'cheaper' },
+    ],
+  },
+  {
+    id: 'lambda', cat: 'compute', name: 'Lambda', sub: 'Serverless Functions',
+    trap: false, champ: true,
+    tags: ['serverless','functions','event-driven','pay-per-use'],
+    what: 'Lambda runs code in response to events without provisioning or managing servers. You pay only for compute time consumed (per 100ms), with a generous 1M free requests/month. Supports Node.js, Python, Java, Go, Ruby, and custom runtimes.',
+    scenario: '<strong>Scenario</strong>An e-commerce platform processes 5,000 order events/day via SQS. Each Lambda invocation (~500ms, 512MB) processes one order: validates, charges, triggers fulfillment. Monthly cost: ~$0.08. Equivalent EC2 (t3.micro): ~$7.50/mo idle. Lambda is 99% cheaper at this scale.',
+    arch: `<span class="hl">SQS Queue</span> (order events)
+   ↓ Event Source Mapping
+<span class="grn">Lambda Function</span> (Node.js, 512MB, 15s timeout)
+   ├── Validate order → <span class="blu">DynamoDB</span>
+   ├── Charge card → <span class="hl">Stripe API</span>
+   └── Trigger → <span class="grn">SNS</span> → Fulfillment Lambda`,
+    costs: [
+      'Use 128MB memory for simple I/O-bound tasks — Lambda bills on duration × memory. Don\'t over-allocate memory.',
+      'Enable Lambda SnapStart for Java functions — reduces cold starts by up to 10x without extra cost.',
+      'Set concurrency limits per function to avoid runaway invocations hitting expensive downstream APIs.',
+    ],
+    alts: [
+      { name: 'EC2', when: 'Long-running workloads, stateful apps, > 15 min execution', cost: 'cheaper at scale' },
+      { name: 'ECS Fargate', when: 'Containerized, needs > 10GB memory or > 6 vCPU', cost: 'pricier' },
+      { name: 'App Runner', when: 'Persistent HTTP services without infra management', cost: 'same' },
+    ],
+  },
+  {
+    id: 'eks', cat: 'compute', name: 'EKS + Fargate', sub: 'Kubernetes Orchestration',
+    trap: true, champ: false,
+    tags: ['kubernetes','containers','k8s','microservices'],
+    what: 'EKS is a managed Kubernetes control plane — AWS handles master nodes, upgrades, and HA. Fargate removes the need to manage EC2 worker nodes by running pods serverlessly. Ideal for large microservice platforms needing fine-grained scheduling and the Kubernetes ecosystem.',
+    scenario: '<strong>Scenario</strong>A fintech startup runs 40 microservices, processing 8,000 req/sec peak. EKS on EC2 Spot + On-Demand nodes: $280/mo cluster + $640/mo nodes. Pure Fargate: $1,100/mo — simpler ops but 70% pricier. They use EKS with Karpenter autoscaler + 80% Spot.',
+    arch: `<span class="hl">EKS Control Plane</span> ($0.10/hr = ~$72/mo)
+   ↓
+<span class="grn">Karpenter Node Autoscaler</span>
+   ├── <span class="hl">Spot NodePool</span>: c6i.2xlarge × 0–20
+   └── <span class="grn">On-Demand NodePool</span>: t3.large × 3 (baseline)
+   ↓
+<span class="blu">Pods</span>: API servers, workers, schedulers
+   ↓
+<span class="blu">ALB Ingress Controller</span> → <span class="hl">Route 53</span>`,
+    costs: [
+      '⚠️ EKS control plane costs $0.10/hr ($72/mo) per cluster even with zero workloads — consolidate dev clusters.',
+      'Use Karpenter over Cluster Autoscaler: it packs pods tighter and selects cheaper instance types dynamically.',
+      'Use Spot instances for stateless workloads — EKS + Spot regularly achieves 60–80% compute savings.',
+    ],
+    alts: [
+      { name: 'ECS', when: 'AWS-native containers, smaller team, no Kubernetes needed', cost: 'cheaper' },
+      { name: 'App Runner', when: 'Simple web services without orchestration complexity', cost: 'same' },
+      { name: 'Lambda', when: 'Event-driven, short-lived tasks with variable traffic', cost: 'cheaper' },
+    ],
+  },
+
+  // STORAGE
+  {
+    id: 's3', cat: 'storage', name: 'S3', sub: 'Simple Storage Service',
+    trap: false, champ: true,
+    tags: ['object-storage','buckets','static-web','data-lake'],
+    what: 'S3 is AWS\'s infinitely scalable object store — 11 nines of durability. Storage is priced at $0.023/GB/mo (Standard), with cheaper tiers for infrequent/archival access. It\'s the backbone of data lakes, static websites, backups, and ML training datasets.',
+    scenario: '<strong>Scenario</strong>A media company stores 200TB of video assets. Breaking it down by access frequency: 5TB hot content (S3 Standard, $115/mo), 45TB warm (S3-IA, $567/mo), 150TB archive (Glacier Instant, $600/mo). Total: ~$1,282/mo vs $4,600/mo with all Standard. Savings: 72%.',
+    arch: `<span class="hl">S3 Bucket</span> (versioning enabled)
+   ├── <span class="grn">Standard</span>      → hot assets (< 30 days)
+   ├── <span class="hl">Standard-IA</span>  → warm assets (30–90 days)
+   ├── <span class="blu">Glacier IR</span>   → archive (90–365 days)
+   └── <span class="grn">Glacier Deep</span> → cold backup (> 1 year)
+        ↓ S3 Lifecycle Rules (automated tiering)
+<span class="blu">CloudFront</span> → CDN for hot content delivery`,
+    costs: [
+      'Enable S3 Intelligent-Tiering ($0.0025/1000 objects) for unpredictable access patterns — auto-moves objects saving up to 40%.',
+      'Use S3 Lifecycle Rules to expire or transition objects automatically — a common mistake is paying $0.023/GB for infrequently accessed data for years.',
+      'Avoid S3 Inter-region data transfer costs ($0.09/GB) by using same-region buckets for compute-heavy pipelines.',
+    ],
+    alts: [
+      { name: 'EFS', when: 'POSIX filesystem access needed, EC2/container shared storage', cost: 'pricier' },
+      { name: 'CloudFront + S3', when: 'Static website/CDN use case', cost: 'same' },
+      { name: 'Glacier', when: 'Pure archive, no retrieval SLA needed', cost: 'cheaper' },
+    ],
+  },
+  {
+    id: 'ebs', cat: 'storage', name: 'EBS', sub: 'Elastic Block Store',
+    trap: true, champ: false,
+    tags: ['block-storage','volumes','ec2','iops'],
+    what: 'EBS provides persistent block storage volumes for EC2 instances — like a high-performance network-attached SSD. Available in gp3 (general purpose), io2 (provisioned IOPS), st1 (throughput-optimized HDD) types. Data persists independently of the EC2 instance lifecycle.',
+    scenario: '<strong>Scenario</strong>A PostgreSQL database on EC2 needs 1TB storage + 3,000 IOPS. gp3: $0.08/GB + $0.005/IOPS = $95/mo (3,000 IOPS included baseline). io2 for same: $0.125/GB + $0.065/IOPS = $320/mo. Use gp3 unless you need > 16,000 IOPS or sub-millisecond latency SLAs.',
+    arch: `<span class="hl">EC2 Instance</span> (database server)
+   ├── <span class="grn">gp3 Volume</span> (OS + app): 50GB, $4/mo
+   ├── <span class="hl">gp3 Volume</span> (DB data): 1TB, $80/mo
+   └── <span class="blu">gp3 Volume</span> (logs): 200GB, $16/mo
+        ↓ EBS Snapshots → <span class="grn">S3</span> (incremental backups)
+        ↓ AWS Backup (automated policy)`,
+    costs: [
+      '⚠️ Migrate gp2 → gp3: gp3 is 20% cheaper AND allows independent IOPS/throughput tuning. Massive low-hanging fruit.',
+      'Delete unattached EBS volumes — orphaned volumes from deleted EC2 instances are a silent $0.08/GB/mo drain.',
+      'Use EBS Snapshots for backups over full volume copies — incremental and stored on S3 pricing (~$0.05/GB/mo).',
+    ],
+    alts: [
+      { name: 'Instance Store', when: 'Ephemeral cache/scratch disk needing max IOPS, data loss OK', cost: 'free (included)' },
+      { name: 'EFS', when: 'Multiple EC2 instances need shared filesystem access', cost: 'pricier' },
+      { name: 'S3', when: 'Object storage, not block storage use case', cost: 'cheaper' },
+    ],
+  },
+  {
+    id: 'efs', cat: 'storage', name: 'EFS', sub: 'Elastic File System',
+    trap: true, champ: false,
+    tags: ['nfs','shared-storage','posix','efs'],
+    what: 'EFS is a fully managed, elastic NFS filesystem — multiple EC2 instances or containers can mount it simultaneously. Automatically scales to petabytes. Use it when applications need shared file access or POSIX semantics that S3 can\'t provide.',
+    scenario: '<strong>Scenario</strong>A content management system runs on 8 EC2 instances that all need to read/write the same user-uploaded files. EFS mounts across all 8 at once — impossible with EBS. Usage: 500GB stored ($150/mo Standard), 200GB Infrequent Access ($4/mo). S3 would be cheaper but requires app code changes.',
+    arch: `<span class="hl">Auto Scaling Group</span> (8 EC2 web servers)
+   ↓ NFS mount (simultaneous read/write)
+<span class="grn">EFS Filesystem</span>
+   ├── <span class="hl">Standard</span>: hot files (last 30 days)
+   └── <span class="blu">IA Tier</span>: cold files (auto-transitioned)
+        ↓ EFS Backup → AWS Backup`,
+    costs: [
+      '⚠️ EFS Standard is $0.30/GB/mo vs S3 at $0.023/GB — 13x pricier. Only use EFS when POSIX/shared access is truly required.',
+      'Enable EFS Intelligent Tiering — auto-moves rarely accessed files to IA ($0.025/GB) with zero code changes.',
+      'Use EFS Bursting mode for variable workloads; Provisioned Throughput only if sustained throughput > burst credits.',
+    ],
+    alts: [
+      { name: 'S3', when: 'Application can be refactored to use object storage APIs', cost: 'cheaper' },
+      { name: 'FSx for Lustre', when: 'HPC/ML workloads needing sub-millisecond shared FS', cost: 'pricier' },
+      { name: 'EBS', when: 'Single instance, high IOPS block storage', cost: 'cheaper' },
+    ],
+  },
+
+  // DATABASE
+  {
+    id: 'rds', cat: 'database', name: 'RDS', sub: 'Relational Database Service',
+    trap: true, champ: false,
+    tags: ['mysql','postgres','sql','relational','multi-az'],
+    what: 'RDS provides managed relational databases — MySQL, PostgreSQL, MariaDB, Oracle, SQL Server — with automated backups, Multi-AZ failover, and read replicas. Eliminates DB patching, hardware management, and failure recovery toil. Good for OLTP workloads up to ~10TB.',
+    scenario: '<strong>Scenario</strong>A B2B SaaS app runs PostgreSQL for 1,000 business tenants with 50,000 daily transactions. db.r6g.large Multi-AZ: $0.48/hr = $345/mo + 500GB storage ($57.50/mo). Total: ~$400/mo. Adding a read replica for reporting: +$173/mo. Compare to self-managed EC2 PostgreSQL: similar cost but 3+ hours/week ops overhead.',
+    arch: `<span class="hl">Application Tier</span> (EC2 / ECS)
+   ↓ pgBouncer (connection pooling)
+<span class="grn">RDS Primary</span> (db.r6g.large, Multi-AZ)
+   ├── Synchronous replication → <span class="blu">Standby AZ-B</span>
+   └── Async replication → <span class="hl">Read Replica</span> (reports)
+        ↓ Automated daily snapshots → S3 (35-day retention)`,
+    costs: [
+      '⚠️ Multi-AZ doubles the instance cost — use single-AZ for dev/staging; reserve Multi-AZ for prod only.',
+      'Use Reserved Instances (1-yr No Upfront) for stable DB workloads — up to 40% savings vs On-Demand.',
+      'Enable RDS Proxy for Lambda-heavy workloads — avoids connection exhaustion and reduces connection overhead costs.',
+    ],
+    alts: [
+      { name: 'Aurora', when: 'Need higher performance, global tables, or serverless scaling', cost: 'pricier' },
+      { name: 'DynamoDB', when: 'Flexible schema, key-value, massive scale (>100K TPS)', cost: 'cheaper at scale' },
+      { name: 'Aurora Serverless v2', when: 'Variable workloads (dev/staging, reporting apps)', cost: 'same' },
+    ],
+  },
+  {
+    id: 'aurora', cat: 'database', name: 'Aurora', sub: 'Cloud-Native Relational DB',
+    trap: false, champ: true,
+    tags: ['aurora','mysql','postgres','serverless','global'],
+    what: 'Aurora is AWS\'s cloud-native database — up to 5× faster than MySQL, 3× faster than PostgreSQL, with storage auto-scaling to 128TB. Aurora Global Database replicates across regions in < 1 second. Aurora Serverless v2 scales from 0.5 to 128 ACUs, billing per second.',
+    scenario: '<strong>Scenario</strong>A ride-sharing app needs sub-2ms query latency for 10,000 rides/sec at peak. Aurora PostgreSQL with 3 read replicas handles the load. Aurora Serverless v2 for the reporting dashboard scales from 0.5 ACU (off-peak, ~$1.44/day) to 16 ACU (peak, ~$46/day). No pre-provisioned capacity needed.',
+    arch: `<span class="hl">Aurora Cluster</span> (6-way replicated storage)
+   ├── <span class="grn">Writer Instance</span>: db.r6g.4xlarge
+   ├── <span class="hl">Reader ×3</span>: db.r6g.2xlarge (read scaling)
+   └── <span class="blu">Aurora Serverless v2</span>: reporting (0.5–32 ACU)
+        ↓ Aurora Global DB
+<span class="grn">us-east-1</span> (primary) ← 1 sec RPO → <span class="blu">eu-west-1</span> (secondary)`,
+    costs: [
+      'Aurora Serverless v2 eliminates idle costs — great for apps with variable load. Pay ~$0.12/ACU-hr vs fixed db.r5.large at $0.24/hr.',
+      'Use Aurora I/O-Optimized for workloads doing > 1M I/O requests/hr — flat $0.225/GB/mo eliminates I/O charges that can surprise.',
+      'Aurora Global Database secondary regions add ~15% cost — only provision if your RTO/RPO requirements demand it.',
+    ],
+    alts: [
+      { name: 'RDS PostgreSQL', when: 'Simpler workload, no need for Aurora speed/scale features', cost: 'cheaper' },
+      { name: 'DynamoDB', when: 'NoSQL, single-digit ms, > 1M TPS scale', cost: 'depends on access patterns' },
+      { name: 'AlloyDB (GCP)', when: 'If on GCP, offers similar capabilities', cost: 'similar' },
+    ],
+  },
+  {
+    id: 'dynamodb', cat: 'database', name: 'DynamoDB', sub: 'Managed NoSQL Key-Value Store',
+    trap: true, champ: false,
+    tags: ['nosql','key-value','document','dynamo','streams'],
+    what: 'DynamoDB is a fully managed, serverless NoSQL database delivering single-digit millisecond performance at any scale. Handles 10+ million TPS. Supports key-value and document models with DynamoDB Streams for event-driven processing. Global Tables for multi-region active-active.',
+    scenario: '<strong>Scenario</strong>A gaming leaderboard serves 500K concurrent players globally. DynamoDB Global Tables in 3 regions. On-Demand pricing: 50M reads/day × $0.25/million = $12.50 + 5M writes/day × $1.25/million = $6.25. Total: ~$560/mo. Compare to Aurora at this scale: would require 10× the instance size. DynamoDB wins by 5–10×.',
+    arch: `<span class="hl">Game Client</span> → <span class="blu">API Gateway</span> → <span class="grn">Lambda</span>
+   ↓
+<span class="hl">DynamoDB Global Table</span> (3 regions, active-active)
+   PK: userId  SK: gameId#timestamp
+   GSI: leaderboard (score-based sort)
+   ↓ DynamoDB Streams
+<span class="grn">Lambda</span> → real-time leaderboard cache → <span class="blu">ElastiCache</span>`,
+    costs: [
+      '⚠️ On-Demand mode costs ~6× more than Provisioned for predictable workloads. Use Provisioned + Auto Scaling for steady state.',
+      '⚠️ GSI (Global Secondary Index) storage doubles table storage costs and consumes write capacity units on every write — limit GSIs.',
+      'Enable TTL on session/transient data — free automatic deletion avoids storage costs building up over time.',
+    ],
+    alts: [
+      { name: 'ElastiCache', when: 'Pure caching/session layer, sub-ms latency, no persistence needed', cost: 'cheaper' },
+      { name: 'DocumentDB', when: 'MongoDB-compatible API, complex document queries with aggregations', cost: 'similar' },
+      { name: 'Aurora Serverless', when: 'Relational schema, complex joins/transactions required', cost: 'similar' },
+    ],
+  },
+  {
+    id: 'elasticache', cat: 'database', name: 'ElastiCache', sub: 'In-Memory Cache (Redis/Memcached)',
+    trap: false, champ: true,
+    tags: ['redis','cache','session','memcached','pub-sub'],
+    what: 'ElastiCache provides managed Redis and Memcached in-memory caches for sub-millisecond response times. Use for session storage, database query caching, rate limiting, leaderboards, and pub/sub messaging. ElastiCache Serverless eliminates cluster sizing entirely.',
+    scenario: '<strong>Scenario</strong>An e-commerce site makes 1,200 database queries/sec for product catalog pages. Adding ElastiCache Redis reduces DB queries to 120/sec (90% cache hit rate). DB load drops from db.r6g.2xlarge ($0.48/hr) to db.r6g.large ($0.24/hr) — saving $173/mo. ElastiCache cache.r6g.large: $122/mo. Net: +$49/mo infrastructure, saves $173 DB cost. ROI in month 1.',
+    arch: `<span class="hl">Application</span> (EC2 / Lambda)
+   ↓ Check cache first
+<span class="grn">ElastiCache Redis</span> (cache.r6g.large, $122/mo)
+   HIT  → return cached value (< 1ms)
+   MISS → query <span class="blu">RDS/Aurora</span> → populate cache
+        → return value (5–50ms)
+   ↓ Redis also used for: sessions, rate limits, pub/sub`,
+    costs: [
+      'Use ElastiCache Serverless for variable workloads ($0.125/ECPU + $0.125/GB) — no idle capacity waste.',
+      'Enable Redis data tiering (cache.r6gd instances) to auto-spill cold data to NVMe SSD — keeps hot data in RAM.',
+      'Tune maxmemory-policy: use allkeys-lru to automatically evict cold keys and avoid OOM errors that cause costly cluster restarts.',
+    ],
+    alts: [
+      { name: 'DynamoDB DAX', when: 'DynamoDB-specific caching with microsecond reads', cost: 'similar' },
+      { name: 'Memcached', when: 'Simple caching only, no persistence, no cluster failover', cost: 'same' },
+      { name: 'Self-managed Redis on EC2', when: 'Need Redis features not supported by ElastiCache', cost: 'cheaper but ops overhead' },
+    ],
+  },
+  {
+    id: 'redshift', cat: 'database', name: 'Redshift', sub: 'Cloud Data Warehouse',
+    trap: true, champ: false,
+    tags: ['data-warehouse','analytics','olap','sql','bi'],
+    what: 'Redshift is a petabyte-scale columnar data warehouse for OLAP analytics — 10× faster than traditional databases for aggregate queries. Redshift Spectrum queries S3 data lakes directly without loading. Serverless mode auto-scales and bills per RPU-second.',
+    scenario: '<strong>Scenario</strong>A retail chain runs nightly ETL loading 50GB/day of sales transactions. Business analysts run 500 queries/day via Tableau. Redshift Serverless (idle most of the day): avg 4 RPUs × $0.36/RPU-hr × 6 active hrs/day = $8.64/day = $259/mo. Equivalent ra3.xlplus cluster 24/7: $556/mo.',
+    arch: `<span class="hl">S3 Data Lake</span> (raw transactions)
+   ↓ AWS Glue ETL
+<span class="grn">Redshift Serverless</span> (auto-scales 2–512 RPU)
+   ├── Internal tables (hot data, last 90 days)
+   └── <span class="hl">Redshift Spectrum</span> → S3 (historical data)
+        ↓
+<span class="blu">QuickSight</span> / Tableau / PowerBI dashboards`,
+    costs: [
+      '⚠️ Provisioned Redshift clusters run 24/7 even with zero queries — switch to Serverless for variable analyst workloads.',
+      'Use Redshift Spectrum to query historical S3 data instead of loading it — avoids storage costs at $0.005/GB scanned.',
+      'Apply DISTKEY and SORTKEY properly — poorly designed tables cause data redistribution that multiplies compute costs.',
+    ],
+    alts: [
+      { name: 'Athena', when: 'Ad-hoc S3 queries, no ETL pipeline, pay-per-query model', cost: 'cheaper for occasional use' },
+      { name: 'Aurora PostgreSQL', when: 'OLTP + light analytics, < 1TB, need ACID transactions', cost: 'cheaper' },
+      { name: 'Snowflake', when: 'Multi-cloud, data sharing across orgs, separate compute/storage', cost: 'similar' },
+    ],
+  },
+
+  // NETWORKING
+  {
+    id: 'vpc', cat: 'networking', name: 'VPC', sub: 'Virtual Private Cloud',
+    trap: false, champ: false,
+    tags: ['vpc','subnets','nacl','security-group','peering'],
+    what: 'VPC lets you provision a logically isolated network section in AWS — define IP ranges, subnets, route tables, and internet/NAT gateways. All AWS resources live in a VPC. The default VPC is fine for experimentation; production workloads need a custom VPC with public/private subnet segregation.',
+    scenario: '<strong>Scenario</strong>A healthcare startup needs HIPAA-compliant isolation. They create a VPC (10.0.0.0/16) with public subnets (web tier), private subnets (app tier), and isolated subnets (database tier). NAT Gateway enables private EC2 outbound internet access. VPC Flow Logs stream to CloudWatch for audit compliance.',
+    arch: `<span class="hl">VPC</span>: 10.0.0.0/16
+   ├── <span class="grn">Public Subnets</span>:  10.0.1.0/24, 10.0.2.0/24
+   │     └── ALB, NAT Gateway, Bastion
+   ├── <span class="hl">Private Subnets</span>: 10.0.11.0/24, 10.0.12.0/24
+   │     └── EC2 App servers, ECS Tasks
+   └── <span class="blu">DB Subnets</span>: 10.0.21.0/24, 10.0.22.0/24
+         └── RDS Multi-AZ, ElastiCache
+   ↓ VPC Endpoints (S3, DynamoDB) — no NAT needed`,
+    costs: [
+      '⚠️ NAT Gateway charges $0.045/hr ($32.40/mo) per AZ + $0.045/GB processed. Use VPC Endpoints for S3/DynamoDB to bypass NAT — free.',
+      'Use VPC Endpoints (PrivateLink) for AWS services to eliminate data transfer costs via internet path.',
+      'Avoid cross-AZ data transfer costs ($0.01/GB) by keeping application tiers in the same AZ for non-critical apps.',
+    ],
+    alts: [
+      { name: 'AWS Transit Gateway', when: 'Connecting 5+ VPCs or on-prem networks at hub-and-spoke scale', cost: 'pricier' },
+      { name: 'VPC Peering', when: '2–3 VPCs with point-to-point connectivity needs', cost: 'same (free peering, pay data transfer)' },
+      { name: 'AWS PrivateLink', when: 'Exposing services to other VPCs without full peering', cost: 'similar' },
+    ],
+  },
+  {
+    id: 'cloudfront', cat: 'networking', name: 'CloudFront', sub: 'Global CDN',
+    trap: false, champ: true,
+    tags: ['cdn','edge','cache','https','waf'],
+    what: 'CloudFront is AWS\'s CDN with 600+ edge locations globally — caches content close to users, reducing latency by 60–85%. Integrates with S3, ALB, API Gateway, and Lambda@Edge for dynamic content. Also provides DDoS protection via AWS Shield Standard (included free).',
+    scenario: '<strong>Scenario</strong>A news site with 500K daily readers globally serves 10TB of images from S3. Without CDN: S3 data transfer $0.09/GB × 10TB = $921/mo. With CloudFront: $0.0085/GB (first 10TB) × 10TB = $87/mo + $0.0075/10K requests = ~$105/mo total. Savings: $816/mo (89%). Plus global p99 latency drops from 800ms to 40ms.',
+    arch: `<span class="hl">User</span> → nearest CloudFront edge (600+ PoPs)
+   CACHE HIT  → serve from edge (< 10ms)
+   CACHE MISS → origin fetch
+      ├── <span class="grn">S3 Origin</span>: static assets
+      ├── <span class="hl">ALB Origin</span>: dynamic API
+      └── <span class="blu">Lambda@Edge</span>: A/B testing, auth
+   ↓ CloudFront Functions (viewer request/response manipulation)`,
+    costs: [
+      'CloudFront data transfer OUT is 50–75% cheaper than S3/EC2 direct egress — always front public assets with CloudFront.',
+      'Use CloudFront Origin Shield ($0.009/GB) for high-traffic origins — reduces origin load and cache-miss costs for viral content.',
+      'Use Cache-Control headers aggressively — max-age=31536000 for static assets to maximize CDN hit rate.',
+    ],
+    alts: [
+      { name: 'Global Accelerator', when: 'TCP/UDP, gaming, non-HTTP protocols, static Anycast IPs needed', cost: 'pricier' },
+      { name: 'Cloudflare', when: 'Multi-cloud CDN, security-first posture, edge compute', cost: 'similar' },
+      { name: 'S3 Static Website', when: 'Tiny single-region site, no global audience', cost: 'cheaper (no CDN cost)' },
+    ],
+  },
+  {
+    id: 'apigw', cat: 'networking', name: 'API Gateway', sub: 'Managed API Layer',
+    trap: true, champ: false,
+    tags: ['api','rest','websocket','http-api','lambda-proxy'],
+    what: 'API Gateway provides a fully managed API front door — handles authentication, throttling, caching, and request/response transformations. REST APIs offer full features; HTTP APIs are faster and 71% cheaper for simple Lambda/HTTP proxy use cases. WebSocket APIs enable real-time bidirectional communication.',
+    scenario: '<strong>Scenario</strong>A mobile app backend processes 100M API calls/month. HTTP API: 100M × $1.00/million = $100/mo. REST API: 100M × $3.50/million = $350/mo. Use HTTP API if you don\'t need REST features (caching, per-method throttling, usage plans). Savings: $250/mo.',
+    arch: `<span class="hl">Mobile App</span> → <span class="blu">Route 53</span>
+   ↓
+<span class="grn">API Gateway HTTP API</span>
+   ├── JWT Authorizer (<span class="hl">Cognito</span> or custom)
+   ├── Rate limiting: 10K req/sec per stage
+   └── Throttling per route
+   ↓ Lambda Proxy Integration
+<span class="blu">Lambda Functions</span> (business logic)`,
+    costs: [
+      '⚠️ Use HTTP API ($1/million) instead of REST API ($3.50/million) for Lambda proxy and simple HTTP integrations — same performance, 71% cheaper.',
+      '⚠️ REST API cache costs $0.02–$3.80/hr per stage even when unused — disable caching in dev environments.',
+      'Set aggressive throttling limits at the route level to avoid runaway Lambda invocations from bad clients.',
+    ],
+    alts: [
+      { name: 'ALB', when: 'Container/EC2 backends, Layer 7 routing, WebSocket, 100M+ req/day', cost: 'cheaper at scale' },
+      { name: 'CloudFront Functions', when: 'Edge routing/auth, simple URL rewrites', cost: 'cheaper' },
+      { name: 'Kong/Nginx on EC2', when: 'Full control, advanced plugin ecosystem, self-managed OK', cost: 'cheaper but ops overhead' },
+    ],
+  },
+
+  // SECURITY
+  {
+    id: 'iam', cat: 'security', name: 'IAM', sub: 'Identity & Access Management',
+    trap: false, champ: true,
+    tags: ['iam','roles','policies','mfa','least-privilege'],
+    what: 'IAM controls who can access AWS services and resources — users, groups, roles, and policies. IAM is free to use. Best practice: no long-term access keys; use IAM Roles for EC2/Lambda; enforce MFA; apply least-privilege policies. IAM Identity Center for workforce SSO.',
+    scenario: '<strong>Scenario</strong>A 50-engineer startup uses IAM Identity Center with Okta SSO. Each engineer gets a role per environment: dev-full-access, staging-read-only, prod-deploy-only. Lambda functions use execution roles with only the S3 bucket and DynamoDB table ARNs they need. Zero long-term access keys in the codebase.',
+    arch: `<span class="hl">IAM Identity Center</span> (SSO via Okta)
+   ├── <span class="grn">PermissionSet: Dev</span> → full access dev account
+   ├── <span class="hl">PermissionSet: Staging</span> → read-only
+   └── <span class="blu">PermissionSet: Prod</span> → specific deploy role
+   ↓ Service roles
+<span class="grn">Lambda Execution Role</span>: s3:GetObject on bucket X only
+<span class="hl">EC2 Instance Profile</span>: read SSM parameters, write CloudWatch`,
+    costs: [
+      'IAM itself is free — invest time in proper role design upfront to avoid costly security incidents.',
+      'Use IAM Access Analyzer to find unused permissions and over-provisioned roles — tighten blast radius without guessing.',
+      'Enforce SCPs (Service Control Policies) at the AWS Organizations level to prevent accidental large resource provisioning.',
+    ],
+    alts: [
+      { name: 'Cognito', when: 'Customer-facing app authentication (not workforce IAM)', cost: 'free tier generous' },
+      { name: 'AWS IAM Identity Center', when: 'Multi-account SSO for teams using Okta/AD/Google', cost: 'free' },
+      { name: 'HashiCorp Vault', when: 'Multi-cloud secret management, dynamic credentials', cost: 'pricier' },
+    ],
+  },
+  {
+    id: 'secrets', cat: 'security', name: 'Secrets Manager', sub: 'Secret Storage & Rotation',
+    trap: true, champ: false,
+    tags: ['secrets','rotation','db-credentials','api-keys','kms'],
+    what: 'Secrets Manager stores, rotates, and retrieves database credentials, API keys, and other secrets. Automatic rotation for RDS/Aurora/Redshift without code changes. Integrates with KMS for encryption at rest. Each secret costs $0.40/mo; API calls $0.05/10K.',
+    scenario: '<strong>Scenario</strong>A company manages 200 secrets (DB passwords, API keys) across 5 microservices. Monthly: 200 × $0.40 = $80/mo secrets + 10M API calls/mo × $0.05/10K = $50/mo. Total: $130/mo. Prevents the $4.45M average cost of a credential-based breach (IBM Cost of a Data Breach 2023).',
+    arch: `<span class="hl">RDS Database</span>
+   ↓ Automatic rotation (Lambda, every 30 days)
+<span class="grn">Secrets Manager</span>
+   ├── Encrypted with <span class="hl">KMS CMK</span>
+   └── Versioned (AWSCURRENT / AWSPENDING)
+   ↓ Applications retrieve at runtime
+<span class="blu">Lambda / ECS Task</span> calls GetSecretValue()
+   → no hardcoded credentials in code/env vars`,
+    costs: [
+      '⚠️ At $0.40/secret/mo, consolidate multiple related credentials into one structured secret (JSON) — 10 DB credentials in 1 secret = $0.40 not $4.00.',
+      'Cache secrets in-process for 5–15 minutes — avoids redundant API call charges on high-frequency Lambda invocations.',
+      'Consider SSM Parameter Store SecureString ($0.05/parameter/mo) for non-rotating secrets — 87% cheaper than Secrets Manager.',
+    ],
+    alts: [
+      { name: 'SSM Parameter Store', when: 'Non-rotating config/secrets, cost-sensitive, simple use case', cost: 'cheaper' },
+      { name: 'HashiCorp Vault', when: 'Multi-cloud, dynamic secrets, complex access policies', cost: 'pricier' },
+      { name: 'AWS KMS alone', when: 'Encrypting application data, not storing credentials', cost: 'cheaper' },
+    ],
+  },
+  {
+    id: 'waf', cat: 'security', name: 'WAF + Shield', sub: 'Web Application Firewall & DDoS',
+    trap: true, champ: false,
+    tags: ['waf','ddos','shield','owasp','bot-protection'],
+    what: 'AWS WAF filters malicious HTTP traffic with customizable rules — block SQL injection, XSS, rate limiting, geographic blocking. Shield Standard (free) protects against common DDoS. Shield Advanced ($3,000/mo + data transfer fees) adds 24/7 DRT support and cost protection for large-scale attacks.',
+    scenario: '<strong>Scenario</strong>An online marketplace is hit by a credential stuffing attack — 500K bot login attempts/hour. WAF rule: rate-limit /login to 100 req/5min per IP + Bot Control managed rule. WAF ACL cost: $5/mo + $1/million req = $15/mo additional for 500K blocked reqs/hr. Prevents account takeovers potentially worth millions.',
+    arch: `<span class="hl">Internet</span>
+   ↓
+<span class="grn">CloudFront</span> or <span class="blu">ALB</span>
+   ↓ WAF ACL evaluation (top → bottom)
+<span class="hl">WAF Rules</span>:
+   1. AWS Managed Rules (OWASP Top 10)
+   2. Rate-based rule (100 req/5min/IP)
+   3. Bot Control (scraper detection)
+   4. Geo-block rule (blocked countries)
+   ↓ Allowed traffic → Application`,
+    costs: [
+      '⚠️ Shield Advanced at $3,000/mo is only justified for high-profile targets — most apps are fine with Shield Standard + WAF.',
+      '⚠️ AWS Managed Rule Groups cost $1/million WCUs — measure actual request volume before enabling all rule groups.',
+      'WAF logging to S3 via Kinesis Firehose costs $0.0009/GB — disable verbose logging in dev environments.',
+    ],
+    alts: [
+      { name: 'Cloudflare WAF', when: 'Multi-cloud, aggressive bot protection, simpler pricing', cost: 'similar to pricier' },
+      { name: 'AWS Network Firewall', when: 'Layer 3/4 VPC-level stateful inspection', cost: 'similar' },
+      { name: 'Security Groups + NACLs', when: 'Basic IP-level allow/deny, no application-layer inspection', cost: 'free' },
+    ],
+  },
+
+  // MESSAGING
+  {
+    id: 'sqs', cat: 'messaging', name: 'SQS', sub: 'Simple Queue Service',
+    trap: false, champ: true,
+    tags: ['queue','async','decoupling','fifo','dlq'],
+    what: 'SQS is a fully managed message queue for decoupling producers from consumers. Standard queues offer virtually unlimited throughput (at-least-once delivery); FIFO queues guarantee ordering and exactly-once processing up to 3,000 messages/sec. The first 1M requests/month are free.',
+    scenario: '<strong>Scenario</strong>An image processing pipeline receives 2M photo uploads/day. S3 PUT event → SQS Standard queue → Lambda consumers scale to 1,000 concurrent workers. SQS cost: 2M msgs × $0.40/million = $0.80/day. Dead Letter Queue catches failed jobs for retry. Decouples upload API from slow image resizing.',
+    arch: `<span class="hl">S3 Upload</span> → S3 Event Notification
+   ↓
+<span class="grn">SQS Standard Queue</span> (buffer)
+   ├── Visibility timeout: 300s
+   ├── DLQ: failed after 3 attempts
+   └── Max receive count: 3
+   ↓ Event Source Mapping (batch size: 10)
+<span class="blu">Lambda Workers</span> (auto-scale 1–1000 concurrent)
+   → resize image → store in S3 → notify SNS`,
+    costs: [
+      'SQS Standard: $0.40/million requests — essentially free for most workloads. 1B messages/month = $400.',
+      'Use long polling (WaitTimeSeconds=20) to reduce empty-receive API calls — can cut SQS costs by 80% for low-volume queues.',
+      'SQS FIFO costs 2× Standard ($0.50/million) — only use FIFO when strict ordering or deduplication is truly required.',
+    ],
+    alts: [
+      { name: 'SNS', when: 'Fan-out to multiple subscribers, push-based pub/sub', cost: 'similar' },
+      { name: 'EventBridge', when: 'Event routing based on content, cross-service/account integration', cost: 'similar' },
+      { name: 'Kinesis', when: 'Real-time streaming, event replay, ordered within shard, > 7 days retention', cost: 'pricier' },
+    ],
+  },
+  {
+    id: 'sns', cat: 'messaging', name: 'SNS', sub: 'Simple Notification Service',
+    trap: false, champ: true,
+    tags: ['pub-sub','notifications','fanout','push','sms'],
+    what: 'SNS is a pub/sub messaging service — one message published to a topic fans out to all subscribers (SQS, Lambda, HTTP, email, SMS, mobile push). First 1M publishes free. Use SNS+SQS fan-out pattern for durable parallel processing of the same event by multiple systems.',
+    scenario: '<strong>Scenario</strong>An order placed triggers: 1) inventory service, 2) fulfillment service, 3) analytics service, 4) customer email. SNS topic → 4 SQS queues (one per service). Each service processes independently at its own pace. One failed service doesn\'t block others. SNS cost: 4M deliveries/day × $0.50/million = $2/day.',
+    arch: `<span class="hl">Order Service</span> → SNS Publish (OrderPlaced event)
+   ↓ Fan-out to 4 subscribers
+<span class="grn">SQS: Inventory</span>    → Lambda (update stock)
+<span class="grn">SQS: Fulfillment</span>  → Lambda (pick/pack)
+<span class="grn">SQS: Analytics</span>    → Kinesis (stream to DWH)
+<span class="blu">Lambda: Email</span>     → SES (customer confirmation)`,
+    costs: [
+      'SNS to SQS: $0.50/million. SNS SMS: $0.00645/message in the US — avoid using SNS SMS for high-volume auth OTPs; use Twilio/Pinpoint.',
+      'Use SNS Message Filtering to route relevant messages to subscribers — reduces downstream SQS/Lambda invocations and costs.',
+      'SNS → Lambda vs SNS → SQS → Lambda: Add SQS buffer when consumers need retry, rate limiting, or batching. Skip SQS for simple fan-out.',
+    ],
+    alts: [
+      { name: 'SQS', when: 'Single consumer, pull-based, need message retention/DLQ', cost: 'similar' },
+      { name: 'EventBridge', when: 'Cross-account/cross-service routing, content-based filtering, schema registry', cost: 'similar' },
+      { name: 'Kinesis', when: 'Real-time analytics stream, ordered processing, multi-consumer replay', cost: 'pricier' },
+    ],
+  },
+  {
+    id: 'eventbridge', cat: 'messaging', name: 'EventBridge', sub: 'Serverless Event Bus',
+    trap: false, champ: true,
+    tags: ['events','event-bus','saas','scheduling','patterns'],
+    what: 'EventBridge is a serverless event bus for connecting AWS services, SaaS apps, and custom applications via events. Supports content-based routing, schema registry, and cross-account event sharing. EventBridge Scheduler replaces CloudWatch Events for cron/rate scheduling.',
+    scenario: '<strong>Scenario</strong>A multi-service platform needs to react to Stripe webhook events (payment.succeeded) and route to: billing service, analytics, and fraud detection — each subscribing to different event patterns. EventBridge rules filter by event.detail.type. SaaS integrations (Shopify, Zendesk) connect without custom polling code.',
+    arch: `<span class="hl">Stripe Webhook</span> → API Gateway → Lambda → EventBridge PutEvents
+   ↓ EventBridge Default Bus
+<span class="grn">Rule: payment.succeeded</span>
+   ├── Target: <span class="hl">Lambda</span> (billing service)
+   ├── Target: <span class="grn">SQS</span> (analytics batch)
+   └── Target: <span class="blu">Lambda</span> (fraud score)
+<span class="grn">Rule: payment.failed</span>
+   └── Target: <span class="hl">SNS</span> → ops alert`,
+    costs: [
+      'EventBridge: $1/million events published. Free tier: first 1M events/month. For high-volume internal events, SNS+SQS is cheaper.',
+      'Use EventBridge Scheduler instead of CloudWatch Events — same pricing but better DSL and retry semantics.',
+      'EventBridge Pipes (source → filter → enrich → target) eliminates custom Lambda glue code — reduces Lambda invocation costs.',
+    ],
+    alts: [
+      { name: 'SNS + SQS', when: 'Simple fan-out without content-based routing, cost-sensitive', cost: 'similar' },
+      { name: 'Step Functions', when: 'Complex multi-step workflows with error handling, human approval', cost: 'pricier' },
+      { name: 'Kafka (MSK)', when: 'High-throughput event streaming, event sourcing, replay needed', cost: 'pricier' },
+    ],
+  },
+  {
+    id: 'stepfunctions', cat: 'messaging', name: 'Step Functions', sub: 'Serverless Workflow Orchestration',
+    trap: true, champ: false,
+    tags: ['workflow','orchestration','state-machine','long-running'],
+    what: 'Step Functions orchestrates Lambda functions and AWS services into visual workflows with error handling, retries, parallel execution, and wait states. Express Workflows for high-volume short duration; Standard for long-running workflows (up to 1 year). Eliminates complex distributed workflow logic.',
+    scenario: '<strong>Scenario</strong>A mortgage application workflow: 1) Credit check (30s), 2) Income verification (24hr wait), 3) Property appraisal (72hr), 4) Underwriter review (human approval), 5) Fund disbursement. Step Functions Standard handles 5-day workflow for 10,000 applications/month. Cost: 50K state transitions × $0.025/1K = $1.25/mo.',
+    arch: `<span class="hl">Application Submit API</span> → Start Execution
+   ↓ Step Functions Standard Workflow
+<span class="grn">State: CreditCheck</span>  → Lambda (sync)
+<span class="hl">State: WaitAppraisal</span> → waitForTaskToken (72hr)
+<span class="grn">State: UnderwriterApproval</span> → human task
+<span class="blu">State: FundDisbursement</span> → Lambda
+   ↓ Error handling: retry with exponential backoff
+   ↓ Dead-letter: notify ops on final failure`,
+    costs: [
+      '⚠️ Standard Workflows: $0.025/1K state transitions. A 20-step workflow × 1M executions/month = $500. Use Express for high-volume simple flows.',
+      'Express Workflows: $1/million executions + $0.00001/GB-second — ideal for microservice orchestration under 5 minutes.',
+      'Avoid using Step Functions for simple sequential Lambda calls — direct Lambda → Lambda invocation is free.',
+    ],
+    alts: [
+      { name: 'EventBridge + SQS', when: 'Loose coupling, no strict ordering, simple fan-out', cost: 'cheaper' },
+      { name: 'Apache Airflow (MWAA)', when: 'Complex DAG-based ETL orchestration, data engineering teams', cost: 'pricier' },
+      { name: 'Lambda direct invocation', when: 'Simple 2–3 step sequential process, no retry/branching needed', cost: 'cheaper' },
+    ],
+  },
+
+  // ANALYTICS
+  {
+    id: 'athena', cat: 'analytics', name: 'Athena', sub: 'Serverless S3 Query Engine',
+    trap: false, champ: true,
+    tags: ['sql','s3','query','parquet','data-lake'],
+    what: 'Athena runs SQL queries directly against data in S3 — no infrastructure, no ETL loading. Pay $5/TB scanned. Supports CSV, JSON, Parquet, ORC. Use columnar formats (Parquet) and partitioning to reduce scan costs by 70–99%. Built on Presto.',
+    scenario: '<strong>Scenario</strong>An analytics team queries 10TB of CloudFront access logs daily. Without optimization: $5 × 10TB = $50/query. Converted to Parquet + partitioned by date: average query scans 50GB = $0.25/query. 200 queries/month = $50/mo vs $10,000/mo. 99.5% savings.',
+    arch: `<span class="hl">S3 Data Lake</span>
+   /logs/year=2024/month=01/day=01/*.parquet
+   ↓ AWS Glue Data Catalog (schema)
+<span class="grn">Athena</span> (serverless SQL, pay-per-scan)
+   SELECT user_id, COUNT(*) FROM logs
+   WHERE year='2024' AND month='01'  ← partition pruning
+   GROUP BY user_id
+   ↓ Results → S3 or <span class="blu">QuickSight</span>`,
+    costs: [
+      'Convert CSV/JSON to Parquet: reduces query costs by 87% + query speed 34× faster. Use Glue ETL or AWS Glue DataBrew.',
+      'Partition your S3 data by date/region/category — Athena only scans matching partitions, avoiding full table scans.',
+      'Enable Athena result reuse (up to 7 days) — identical queries return cached results at $0 cost.',
+    ],
+    alts: [
+      { name: 'Redshift Spectrum', when: 'Already using Redshift, need to join S3 data with warehouse tables', cost: 'similar' },
+      { name: 'Redshift', when: 'Heavy analytics workload, consistent query performance SLA needed', cost: 'pricier' },
+      { name: 'EMR (Spark)', when: 'Complex ETL transformations, ML workloads, custom Spark code', cost: 'pricier' },
+    ],
+  },
+  {
+    id: 'kinesis', cat: 'analytics', name: 'Kinesis', sub: 'Real-Time Data Streaming',
+    trap: true, champ: false,
+    tags: ['streaming','real-time','kinesis','firehose','analytics'],
+    what: 'Kinesis Data Streams ingests real-time data at scale — clickstream, IoT sensor data, application logs. Shards provide ordered, partitioned throughput (1MB/s write, 2MB/s read per shard). Kinesis Firehose delivers streaming data to S3/Redshift/Elasticsearch with auto-scaling.',
+    scenario: '<strong>Scenario</strong>A mobile game tracks 2M player events/sec for real-time leaderboard updates. Kinesis Data Streams: 2MB/s peak → 2 shards = $0.015/shard-hr × 2 × 720hr = $21.60/mo + PUT payload units. Kinesis Firehose archives to S3 in Parquet format for later Athena analysis.',
+    arch: `<span class="hl">Game Clients</span> → Kinesis Producer Library (KPL)
+   ↓
+<span class="grn">Kinesis Data Streams</span> (2 shards, 1MB/s each)
+   ├── <span class="hl">Consumer: Lambda</span> → real-time score updates
+   ├── <span class="grn">Consumer: Kinesis Analytics</span> → SQL aggregations
+   └── <span class="blu">Consumer: Firehose</span> → S3 Parquet archive`,
+    costs: [
+      '⚠️ Kinesis shards cost $0.015/shard-hr (~$10.80/shard/mo) even with zero traffic — size carefully and use On-Demand Streams to avoid over-sharding.',
+      'Kinesis Firehose is cheaper than Data Streams for simple S3 delivery — $0.029/GB processed, no shard management.',
+      'Use Enhanced Fan-Out only when multiple consumers need dedicated 2MB/s throughput — it costs $0.015/shard-hr extra.',
+    ],
+    alts: [
+      { name: 'SQS', when: 'Simple message queuing, no ordering/replay requirements', cost: 'cheaper' },
+      { name: 'MSK (Managed Kafka)', when: 'Complex streaming topology, Kafka ecosystem, multi-consumer replay needed', cost: 'pricier' },
+      { name: 'EventBridge Pipes', when: 'Event routing and simple streaming < 1MB/s', cost: 'cheaper' },
+    ],
+  },
+  {
+    id: 'glue', cat: 'analytics', name: 'AWS Glue', sub: 'Serverless ETL & Data Catalog',
+    trap: true, champ: false,
+    tags: ['etl','catalog','spark','data-lake','crawler'],
+    what: 'Glue is a serverless ETL service — write PySpark/Python ETL jobs that auto-scale without cluster management. Glue Data Catalog centralizes metadata for S3, RDS, Redshift. Glue Crawlers automatically infer schemas. DataBrew provides no-code visual data preparation.',
+    scenario: '<strong>Scenario</strong>A data engineering team processes 500GB/day of raw S3 logs into clean Parquet tables. Glue Spark job: 10 DPUs × 2hr/day × $0.44/DPU-hr = $8.80/day = $264/mo. Glue Catalog: $1/100K metadata API calls. Without Glue: equivalent EMR cluster costs ~$420/mo + EC2 mgmt overhead.',
+    arch: `<span class="hl">S3 Raw Zone</span> (CSV/JSON logs)
+   ↓ Glue Crawler (daily, auto-discover schema)
+<span class="grn">Glue Data Catalog</span> (shared metadata store)
+   ↓ Glue ETL Job (PySpark, 10 DPUs)
+<span class="blu">S3 Curated Zone</span> (Parquet, partitioned)
+   ↓ Athena / Redshift Spectrum / QuickSight`,
+    costs: [
+      '⚠️ Glue DPUs have a 1-minute billing minimum — avoid using Glue for tiny jobs (< 1 min); use Lambda instead.',
+      'Use Glue G.1X workers (1 DPU, 16GB) for memory-intensive jobs instead of G.2X — halves cost for most workloads.',
+      'Set job bookmark to process only new data — avoid full re-processing which multiplies DPU-hours consumed.',
+    ],
+    alts: [
+      { name: 'EMR', when: 'Custom Spark tuning, complex ML pipelines, spot-heavy clusters', cost: 'cheaper for large jobs' },
+      { name: 'Lambda', when: 'Simple file transformation < 15 min, small data volumes', cost: 'cheaper' },
+      { name: 'dbt + Redshift', when: 'SQL-based transformation, analytics engineers over data engineers', cost: 'similar' },
+    ],
+  },
+
+  // DEVOPS
+  {
+    id: 'codepipeline', cat: 'devops', name: 'CodePipeline + CodeBuild', sub: 'CI/CD Automation',
+    trap: false, champ: true,
+    tags: ['cicd','pipeline','build','deploy','devops'],
+    what: 'CodePipeline orchestrates continuous delivery pipelines — source → build → test → deploy stages. CodeBuild runs build/test in managed containers (pay-per-build-minute). CodeDeploy handles rolling, blue/green, and canary deployments to EC2, ECS, Lambda, or on-prem.',
+    scenario: '<strong>Scenario</strong>A team of 20 engineers deploys a Node.js API 15 times/week. CodePipeline: 1 active pipeline × $1/mo. CodeBuild: 15 builds/week × 5min avg × $0.005/min = $1.50/mo. CodeDeploy: free for EC2/Lambda. Total CI/CD cost: ~$2.50/mo. GitHub Actions equivalent: free tier or $4/user/mo = $80/mo.',
+    arch: `<span class="hl">GitHub Push</span> → CodePipeline Source stage
+   ↓
+<span class="grn">CodeBuild</span> (build & unit test)
+   buildspec.yml: npm install → test → docker build → push ECR
+   ↓
+<span class="hl">Manual Approval</span> gate (prod deploys)
+   ↓
+<span class="blu">CodeDeploy</span> → ECS Blue/Green deployment
+   ├── Route 5% traffic to green
+   ├── Monitor CloudWatch alarms (5 min)
+   └── Shift 100% or rollback`,
+    costs: [
+      'CodeBuild pricing: $0.005/min (general1.small) — optimize build times with layer caching in Docker builds.',
+      'CodePipeline: $1/active pipeline/month — consolidate microservice pipelines with parallel actions rather than 1 pipeline per service.',
+      'Use CodeBuild for Terraform plan/apply instead of running Terraform on EC2 — pay-per-use vs always-on instance.',
+    ],
+    alts: [
+      { name: 'GitHub Actions', when: 'GitHub-native, broad ecosystem, open-source community actions', cost: 'similar' },
+      { name: 'Jenkins on EC2', when: 'Complex custom build logic, on-prem agent requirements', cost: 'cheaper but high ops overhead' },
+      { name: 'GitLab CI', when: 'All-in-one DevSecOps platform', cost: 'similar' },
+    ],
+  },
+  {
+    id: 'cloudformation', cat: 'devops', name: 'CloudFormation / CDK', sub: 'Infrastructure as Code',
+    trap: false, champ: true,
+    tags: ['iac','cloudformation','cdk','terraform','stacks'],
+    what: 'CloudFormation provisions AWS infrastructure as code — JSON/YAML templates describe resources; CloudFormation manages creation, updates, and deletion. CDK (Cloud Development Kit) lets you write IaC in TypeScript, Python, Java, etc., synthesized to CloudFormation. Both are free to use.',
+    scenario: '<strong>Scenario</strong>A platform team manages 300 microservices across 3 environments (dev/staging/prod). CDK constructs define standard "service" patterns (Lambda + API Gateway + DynamoDB + CloudWatch alarms). New services deployed in < 5 minutes via `cdk deploy`. Drift detection alerts on manual console changes.',
+    arch: `<span class="hl">CDK App</span> (TypeScript)
+   └── Stack: WebService
+         ├── Lambda Function (code asset)
+         ├── API Gateway (HTTP API)
+         ├── DynamoDB Table
+         └── CloudWatch Dashboard
+   ↓ cdk synth → CloudFormation template
+   ↓ cdk deploy → CloudFormation ChangeSet → AWS Resources
+   ↓ Drift Detection (daily) → SNS alert on deviation`,
+    costs: [
+      'CloudFormation and CDK are free — you only pay for the resources they provision. No additional management cost.',
+      'Use CDK Aspects to enforce cost governance rules across all stacks: e.g., ensure all EC2 uses T3 not T2, tag all resources.',
+      'CDK Pipelines enable self-mutating CI/CD — avoids dedicated Jenkins/CodeBuild servers for IaC deployment.',
+    ],
+    alts: [
+      { name: 'Terraform', when: 'Multi-cloud IaC, large community modules, team already knows HCL', cost: 'same (free OSS)' },
+      { name: 'Pulumi', when: 'IaC in familiar programming languages with true imperative logic', cost: 'same (free tier)' },
+      { name: 'AWS SAM', when: 'Serverless-focused IaC with local Lambda testing', cost: 'same (free)' },
+    ],
+  },
+
+  // MONITORING
+  {
+    id: 'cloudwatch', cat: 'monitoring', name: 'CloudWatch', sub: 'Metrics, Logs & Alarms',
+    trap: true, champ: false,
+    tags: ['metrics','logs','alarms','dashboards','insights'],
+    what: 'CloudWatch collects metrics, logs, and traces from all AWS services. CloudWatch Logs Insights enables ad-hoc log querying. CloudWatch Alarms trigger auto-scaling, SNS alerts, or EC2 actions. Container Insights adds ECS/EKS cluster-level visibility.',
+    scenario: '<strong>Scenario</strong>A production API has 99.9% uptime SLA. CloudWatch alarms on P99 latency > 500ms trigger auto-scaling and PagerDuty alert. CloudWatch Logs Insights queries error patterns across 50 Lambda functions in 10 seconds. Monthly: 50 custom metrics × $0.30 = $15 + 500GB logs $0.50/GB = $265.',
+    arch: `<span class="hl">All AWS Services</span> → CloudWatch Metrics (free)
+<span class="grn">Custom Metrics</span> (app-level): $0.30/metric/mo
+<span class="hl">CloudWatch Logs</span>: $0.50/GB ingestion
+   ↓ Logs Insights queries
+<span class="blu">Alarms</span> → Auto Scaling policy / SNS → PagerDuty
+<span class="grn">Dashboards</span>: $3/dashboard/mo`,
+    costs: [
+      '⚠️ CloudWatch Logs ingestion at $0.50/GB adds up fast — set log retention policies (30–90 days) and filter verbose debug logs in production.',
+      '⚠️ CloudWatch detailed monitoring on EC2 ($3.50/instance/mo) is often enabled by default — disable for non-critical instances.',
+      'Export CloudWatch Logs to S3 ($0.03/GB) for long-term retention instead of keeping in CloudWatch ($0.50/GB + storage costs).',
+    ],
+    alts: [
+      { name: 'Datadog', when: 'Multi-cloud, richer APM, better developer experience, unified view', cost: 'pricier' },
+      { name: 'Grafana + Prometheus', when: 'Open-source stack, Kubernetes-native, cost-sensitive', cost: 'cheaper' },
+      { name: 'AWS X-Ray', when: 'Distributed tracing for microservices/Lambda call chains', cost: 'similar (complementary)' },
+    ],
+  },
+  {
+    id: 'cloudtrail', cat: 'monitoring', name: 'CloudTrail + Config', sub: 'Audit & Compliance',
+    trap: false, champ: true,
+    tags: ['audit','compliance','trail','config','governance'],
+    what: 'CloudTrail records every API call in your AWS account — who did what, when, from where. Essential for security forensics and compliance (PCI, SOC2, HIPAA). AWS Config continuously evaluates resource configurations against desired rules, detecting compliance drift.',
+    scenario: '<strong>Scenario</strong>A financial services company needs SOC2 Type II compliance. CloudTrail logs all IAM changes, S3 access, and EC2 actions. Config rules enforce: no public S3 buckets, MFA on root account, encrypted EBS volumes. Config Conformance Pack deploys 20 rules at once. Annual audit prep reduced from 3 weeks to 3 days.',
+    arch: `<span class="hl">All API Calls</span> → CloudTrail (all regions)
+   ↓ Event delivered within 15 min
+<span class="grn">S3 Bucket</span> (encrypted, 7-year retention)
+<span class="hl">CloudWatch Logs</span> (real-time alerting)
+   ├── Alert: root login without MFA
+   └── Alert: unauthorized IAM policy change
+<span class="blu">AWS Config</span> → evaluates resource config continuously
+   └── Config Rules: s3-bucket-public-read-prohibited, etc.`,
+    costs: [
+      'CloudTrail: first trail per region is free; management events. Data events (S3 object access) cost $0.10/100K — enable only for sensitive buckets.',
+      'AWS Config: $0.003/configuration item recorded. For 5,000 resources changing daily = ~$450/mo — filter only relevant resource types.',
+      'Use AWS Security Hub to aggregate Config + GuardDuty + Inspector findings in one place — avoids per-tool analysis costs.',
+    ],
+    alts: [
+      { name: 'Splunk', when: 'Advanced SIEM, complex correlation, mature SOC team', cost: 'pricier' },
+      { name: 'AWS Security Hub', when: 'Unified security findings aggregation across services', cost: 'complementary, $0.001/finding' },
+      { name: 'Audit Manager', when: 'Automated evidence collection for specific frameworks (PCI, SOC2)', cost: 'pricier' },
+    ],
+  },
+
+  // AI/ML
+  {
+    id: 'sagemaker', cat: 'aiml', name: 'SageMaker', sub: 'ML Platform',
+    trap: true, champ: false,
+    tags: ['ml','training','inference','notebooks','mlops'],
+    what: 'SageMaker is a fully managed ML platform covering the entire lifecycle — data labeling, feature engineering, training, hyperparameter tuning, model deployment, monitoring. SageMaker Serverless Inference for sporadic traffic; Real-Time endpoints for low-latency serving.',
+    scenario: '<strong>Scenario</strong>A retail company trains a churn prediction model weekly on 50GB of customer data. SageMaker Training: ml.m5.4xlarge × 2hr/week × $0.922/hr = $7.38/week = $30/mo. SageMaker Endpoint: ml.m5.large for real-time scoring: $0.128/hr = $92/mo. Total: ~$122/mo for full MLOps pipeline.',
+    arch: `<span class="hl">Raw Data</span> (S3) → SageMaker Feature Store
+   ↓ SageMaker Pipelines (automated retraining)
+<span class="grn">Training Job</span> (ml.m5.4xlarge, XGBoost built-in algo)
+   ↓ Model artifacts → S3
+<span class="hl">SageMaker Model Registry</span> (versioning, approval gate)
+   ↓ Deploy approved models
+<span class="blu">Real-Time Endpoint</span> (ml.m5.large, auto-scaling)
+   ↓ CloudWatch Model Monitor (data drift detection)`,
+    costs: [
+      '⚠️ SageMaker Studio notebooks idle but running cost $0.05–$0.50/hr — use auto-shutdown lifecycle configs; a forgotten ml.g4dn.xlarge = $730/mo.',
+      'Use Spot Training for ML training jobs — up to 90% savings; SageMaker auto-resumes from checkpoints on spot interruption.',
+      'SageMaker Serverless Inference for low-traffic models: $0.00001646/inference-unit — zero cost when idle vs $92/mo for always-on endpoint.',
+    ],
+    alts: [
+      { name: 'Bedrock', when: 'Using foundation models (Claude, Llama, Titan) without training', cost: 'pay-per-token, often cheaper' },
+      { name: 'EC2 + GPU (p3/g5)', when: 'Custom deep learning framework, maximum control', cost: 'cheaper with Spot, complex ops' },
+      { name: 'Vertex AI (GCP)', when: 'Multi-cloud, strong AutoML capabilities', cost: 'similar' },
+    ],
+  },
+  {
+    id: 'bedrock', cat: 'aiml', name: 'Amazon Bedrock', sub: 'Foundation Model APIs',
+    trap: false, champ: true,
+    tags: ['llm','foundation-models','claude','generative-ai','rag'],
+    what: 'Bedrock provides serverless access to foundation models — Anthropic Claude, Meta Llama, Amazon Titan, Mistral, Cohere — via a unified API. No model management; pay per input/output token. Supports RAG (with Knowledge Bases), agents, guardrails, and fine-tuning.',
+    scenario: '<strong>Scenario</strong>A customer support platform uses Bedrock (Claude 3 Haiku) to auto-classify 1M support tickets/month and draft responses. Cost: 1M inputs × 200 tokens × $0.00025/1K tokens = $50/mo inputs + 1M outputs × 100 tokens × $0.00125/1K = $125/mo. Total: $175/mo. Reduces human agents needed by 40% (saves $20K+/mo).',
+    arch: `<span class="hl">Support Ticket</span> → API Gateway → Lambda
+   ↓
+<span class="grn">Bedrock: Claude 3 Haiku</span>
+   System prompt: "Classify ticket as: billing/technical/general"
+   + Ticket text (200 tokens input)
+   ↓ Response: category + draft reply (100 tokens)
+<span class="blu">Knowledge Base</span> (RAG): product docs in S3 → vector store
+   ↓ Results stored in DynamoDB + agent dashboard`,
+    costs: [
+      'Choose model tier wisely: Claude 3 Haiku 20× cheaper than Claude 3 Opus for classification tasks. Match model to task complexity.',
+      'Use Bedrock Batch Inference for non-real-time tasks — up to 50% cheaper than synchronous on-demand invocations.',
+      'Implement prompt caching — Bedrock charges for full input tokens per call; cache system prompts server-side when possible.',
+    ],
+    alts: [
+      { name: 'SageMaker (self-hosted LLM)', when: 'Need custom fine-tuned model, HIPAA/data residency requirements', cost: 'pricier upfront' },
+      { name: 'OpenAI API', when: 'GPT-4 quality requirements, strong ecosystem, multi-cloud', cost: 'similar' },
+      { name: 'Hugging Face Inference API', when: 'Open-source models, no cloud lock-in', cost: 'cheaper for OSS models' },
+    ],
+  },
+
+  // EDGE & IoT
+  {
+    id: 'iotcore', cat: 'edge', name: 'IoT Core', sub: 'Managed IoT Connectivity',
+    trap: false, champ: false,
+    tags: ['iot','mqtt','devices','rules','greengrass'],
+    what: 'IoT Core provides a managed MQTT broker for billions of IoT devices — devices connect securely with certificates; IoT Rules Engine routes messages to Lambda, Kinesis, DynamoDB, S3. IoT Greengrass extends AWS compute to edge devices running ML inference locally.',
+    scenario: '<strong>Scenario</strong>A smart factory deploys 10,000 sensors sending temperature readings every 30 seconds. IoT Core: 10K devices × 2 messages/min × 0.5KB = 10K msgs/min. Cost: 1M messages × $1/million = $1/day = $30/mo. Rules Engine routes anomalies to Lambda for real-time alerting. Greengrass runs edge ML inference on gateway devices.',
+    arch: `<span class="hl">10K IoT Sensors</span> (MQTT over TLS)
+   ↓ X.509 certificate auth
+<span class="grn">IoT Core</span> (managed MQTT broker)
+   ↓ IoT Rules Engine (SQL-like rules)
+   ├── <span class="hl">Lambda</span>: anomaly detection (temp > 80°C)
+   ├── <span class="grn">Kinesis Firehose</span>: raw data → S3
+   └── <span class="blu">DynamoDB</span>: latest state per device
+   ↓ IoT Greengrass (edge gateway)
+<span class="hl">Local ML inference</span> (no cloud round-trip)`,
+    costs: [
+      'IoT Core messaging: $1/million messages (first 1B/mo). Consider batching small sensor readings to reduce message count.',
+      'Use IoT Device Shadow only for state synchronization — it\'s $0.001/operation, don\'t use as a database substitute.',
+      'Greengrass edge processing reduces cloud data transfer costs — process and aggregate locally, send only anomalies upstream.',
+    ],
+    alts: [
+      { name: 'Kinesis Data Streams', when: 'High-throughput time-series data without device management', cost: 'similar' },
+      { name: 'Azure IoT Hub', when: 'Existing Azure ecosystem, enterprise IoT platform', cost: 'similar' },
+      { name: 'Self-managed Mosquitto', when: 'Small fleet (< 100 devices), cost-sensitive, control required', cost: 'much cheaper' },
+    ],
+  },
+  {
+    id: 'globalaccelerator', cat: 'edge', name: 'Global Accelerator', sub: 'Global Network Acceleration',
+    trap: true, champ: false,
+    tags: ['anycast','global','tcp','udp','gaming'],
+    what: 'Global Accelerator routes user traffic through AWS\'s private global network backbone instead of the public internet, reducing latency by 30–60%. Provides static Anycast IP addresses. Unlike CloudFront (HTTP caching), it accelerates any TCP/UDP protocol — ideal for gaming, IoT, and non-cacheable APIs.',
+    scenario: '<strong>Scenario</strong>A multiplayer gaming company serves 50K concurrent players across 4 continents. Public internet routing averages 180ms latency. Global Accelerator routes through AWS backbone: 45ms. 2 Accelerators × $0.025/hr = $36/mo + $0.015/GB × 5TB/mo = $111/mo. Player churn drops 25% from latency improvement.',
+    arch: `<span class="hl">Global Players</span> → Anycast IPs (2 static IPs)
+   ↓ Route to nearest AWS edge PoP
+<span class="grn">AWS Global Network</span> (private backbone)
+   ↓ Optimal routing to
+<span class="hl">Endpoint Groups</span>:
+   ├── us-east-1: EC2 ALB (weight: 50%)
+   └── eu-west-1: EC2 ALB (weight: 50%)
+<span class="blu">Health checks</span>: automatic failover if endpoint unhealthy`,
+    costs: [
+      '⚠️ Global Accelerator costs $0.025/hr ($18/accelerator/mo) even with zero traffic — don\'t use for low-traffic internal apps.',
+      'For HTTP-only workloads, CloudFront is 60–80% cheaper and adds caching benefits — prefer CloudFront for web apps.',
+      'Use Global Accelerator for non-HTTP or latency-critical applications only; CloudFront for everything HTTP-based.',
+    ],
+    alts: [
+      { name: 'CloudFront', when: 'HTTP/HTTPS content, caching possible, web apps', cost: 'cheaper' },
+      { name: 'Route 53 Latency Routing', when: 'DNS-based geo-routing, no private backbone needed', cost: 'cheaper' },
+      { name: 'Cloudflare Argo', when: 'Multi-cloud smart routing with similar network optimization', cost: 'similar' },
+    ],
+  },
+
+  // MIGRATION
+  {
+    id: 'dms', cat: 'migration', name: 'DMS', sub: 'Database Migration Service',
+    trap: false, champ: false,
+    tags: ['migration','database','replication','cdc','heterogeneous'],
+    what: 'DMS migrates databases to AWS with minimal downtime — supports homogeneous (Oracle→Oracle) and heterogeneous (Oracle→Aurora) migrations. Schema Conversion Tool (SCT) converts stored procedures and schemas. CDC (Change Data Capture) keeps source and target in sync during cutover.',
+    scenario: '<strong>Scenario</strong>A company migrates 4TB Oracle database to Aurora PostgreSQL. Phase 1: SCT converts 85% of stored procedures automatically (15% require manual fixes). Phase 2: DMS full load (72 hours) + CDC ongoing replication for zero-downtime cutover. DMS replication instance: dms.r5.xlarge × 72hr × $0.48/hr = $34.56 migration cost.',
+    arch: `<span class="hl">Source: Oracle On-Prem</span>
+   ↓ AWS SCT (schema conversion)
+<span class="grn">DMS Replication Instance</span> (dms.r5.xlarge)
+   ├── Full Load phase: bulk data transfer
+   └── CDC phase: replicate ongoing changes
+   ↓ Target
+<span class="blu">Aurora PostgreSQL</span> (new AWS database)
+<span class="hl">Validation</span>: DMS data validation task compares row counts/checksums`,
+    costs: [
+      'DMS replication instance is pay-per-hour — provision for migration duration only. Scale up for faster full load, scale down for CDC.',
+      'Use DMS Serverless for variable workloads — auto-scales from 1–256 DCUs at $0.12/DCU-hr instead of fixed instance.',
+      'Run DMS within the same VPC as target database to avoid data transfer charges during migration.',
+    ],
+    alts: [
+      { name: 'AWS Snowball', when: '> 10TB data, network transfer would take weeks', cost: '$300–600 per device (one-time)' },
+      { name: 'Native DB tools (pg_dump)', when: 'Homogeneous migration, small DB, technical team', cost: 'free' },
+      { name: 'Application Migration Service', when: 'Lift-and-shift full server (not just DB) migration', cost: 'similar' },
+    ],
+  },
+  {
+    id: 'snow', cat: 'migration', name: 'Snow Family', sub: 'Physical Data Transfer',
+    trap: false, champ: false,
+    tags: ['snowball','snowcone','snowmobile','offline-transfer','edge'],
+    what: 'Snow Family moves massive datasets offline when network transfer is impractical. Snowcone: 8TB, portable. Snowball Edge: 80TB per device, compute capabilities for edge processing. Snowmobile: 100PB truck. Rule of thumb: use Snow when online transfer would take > 1 week.',
+    scenario: '<strong>Scenario</strong>A broadcast company needs to migrate 5PB of archived video to S3. Online transfer at 1Gbps dedicated link: 44 days. Cost: $0.09/GB × 5PB = $450K. 63 Snowball Edge devices × $300 rental = $18,900. Shipped in batches, total transfer in 3 weeks. 97% cheaper than online transfer.',
+    arch: `<span class="hl">On-Premises Data</span> (5PB video archive)
+   ↓ AWS ships Snowball Edge devices
+<span class="grn">Snowball Edge</span> (80TB each, 63 devices)
+   ← copy data (local network, max speed)
+   ← ship back to AWS
+   ↓ AWS ingest
+<span class="blu">S3 Standard or Glacier</span> (depending on access tier)
+   ↓ <span class="hl">S3 Intelligent-Tiering</span> (auto-optimize)`,
+    costs: [
+      'Rule of thumb: if data transfer > 1 week at your network speed, Snow is cheaper. Calculate: data_GB / (bandwidth_Mbps × 86400 × 0.8) = days.',
+      'Snowball Edge (Compute Optimized) enables running Lambda functions at the edge during transfer — dual-purpose for edge processing.',
+      'Import to S3 is free with Snow devices — only pay device rental + S3 storage costs.',
+    ],
+    alts: [
+      { name: 'Direct Connect', when: '> 1Gbps dedicated network, ongoing large transfers', cost: 'pricier setup, cheaper long-term' },
+      { name: 'AWS DataSync', when: 'Online transfer < 100TB, managed file sync with scheduling', cost: '$0.0125/GB' },
+      { name: 'Internet + S3 Multi-Part Upload', when: '< 1TB, good internet connection', cost: '$0.09/GB but no fixed cost' },
+    ],
+  },
+];
+
+const OVERLAPS = [
+  {
+    title: 'SQS vs SNS vs EventBridge — when to use which?',
+    items: [
+      { name: 'SQS', desc: 'One consumer, async buffer, need retry/DLQ, rate limiting. Producer-consumer decoupling. "One worker processes one message."' },
+      { name: 'SNS', desc: 'Fan-out to multiple consumers simultaneously. Push-based. "All subscribers get every message." Best for: notifications, parallel processing.' },
+      { name: 'EventBridge', desc: 'Content-based routing, cross-account/SaaS integration, scheduled tasks. "Route events to different targets based on what the event contains."' },
+    ]
+  },
+  {
+    title: 'RDS vs Aurora vs DynamoDB — when to use which?',
+    items: [
+      { name: 'RDS', desc: 'Standard SQL workloads < 10TB, simple OLTP, team knows MySQL/Postgres, cost-sensitive. The safe default for relational data.' },
+      { name: 'Aurora', desc: 'Need > 5× MySQL performance, global active-active, serverless scaling, or > 64TB storage. Pay ~20% premium over RDS.' },
+      { name: 'DynamoDB', desc: 'Flexible/document schema, > 100K TPS, single-digit ms latency at any scale, key-value lookups dominate access pattern.' },
+    ]
+  },
+  {
+    title: 'EC2 vs Lambda vs Fargate vs ECS — when to use which?',
+    items: [
+      { name: 'Lambda', desc: 'Event-driven, stateless, variable traffic, < 15 min. Best TCO for most microservices. Cold starts are the main limitation.' },
+      { name: 'Fargate', desc: 'Long-running containers, need > 10GB memory, consistent traffic. Serverless containers without EC2 fleet management.' },
+      { name: 'EC2', desc: 'Maximum control, heavy compute/GPU, lift-and-shift, stateful apps, or when Savings Plans make it cheaper than Fargate.' },
+    ]
+  },
+];
+
+let currentFilter = 'all';
+let currentSearch = '';
+
+function setFilter(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderServices();
+}
+
+function filterServices(query) {
+  currentSearch = query.toLowerCase();
+  renderServices();
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById('cat-' + id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleCard(cardId) {
+  const header = document.getElementById('hdr-' + cardId);
+  const body = document.getElementById('bdy-' + cardId);
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+function switchTab(cardId, tabName) {
+  const tabs = document.querySelectorAll(`[data-card="${cardId}"].tab`);
+  const panels = document.querySelectorAll(`[data-card="${cardId}"].tab-panel`);
+  tabs.forEach(t => { t.classList.toggle('active', t.dataset.tab === tabName); });
+  panels.forEach(p => { p.classList.toggle('active', p.dataset.tab === tabName); });
+}
+
+function buildArch(raw) {
+  return raw
+    .replace(/<span class="hl">(.*?)<\/span>/g, '<span class="hl">$1</span>')
+    .replace(/<span class="grn">(.*?)<\/span>/g, '<span class="grn">$1</span>')
+    .replace(/<span class="blu">(.*?)<\/span>/g, '<span class="blu">$1</span>');
+}
+
+function renderServices() {
+  const container = document.getElementById('servicesContainer');
+  let html = '';
+
+  const filteredCats = CATEGORIES.filter(cat => {
+    const catServices = SERVICES.filter(s => {
+      if (s.cat !== cat.id) return false;
+      if (currentFilter === 'trap' && !s.trap) return false;
+      if (currentFilter === 'champ' && !s.champ) return false;
+      if (currentSearch) {
+        const text = (s.name + s.sub + s.tags.join(' ') + s.what + s.scenario).toLowerCase();
+        if (!text.includes(currentSearch)) return false;
+      }
+      return true;
+    });
+    return catServices.length > 0;
+  });
+
+  if (filteredCats.length === 0) {
+    html = '<div class="no-results">No services match your filter. Try a different search or filter.</div>';
+    container.innerHTML = html;
+    return;
+  }
+
+  filteredCats.forEach(cat => {
+    const catServices = SERVICES.filter(s => {
+      if (s.cat !== cat.id) return false;
+      if (currentFilter === 'trap' && !s.trap) return false;
+      if (currentFilter === 'champ' && !s.champ) return false;
+      if (currentSearch) {
+        const text = (s.name + s.sub + s.tags.join(' ') + s.what + s.scenario).toLowerCase();
+        if (!text.includes(currentSearch)) return false;
+      }
+      return true;
+    });
+
+    html += `<div class="category-block section-anchor" id="cat-${cat.id}">
+      <div class="cat-header">
+        <div class="cat-icon">${cat.icon}</div>
+        <div class="cat-title">${cat.name}</div>
+        <div class="cat-count">${catServices.length} service${catServices.length !== 1 ? 's' : ''}</div>
+      </div>`;
+
+    catServices.forEach(svc => {
+      const badges = [];
+      if (svc.trap) badges.push(`<span class="badge badge-trap">⚠️ Cost Trap</span>`);
+      if (svc.champ) badges.push(`<span class="badge badge-champ">✅ Cost Champion</span>`);
+
+      const altsRows = svc.alts.map(a => {
+        const costClass = a.cost.includes('cheaper') ? 'cheaper' : (a.cost.includes('pricier') ? 'pricier' : 'same');
+        return `<tr>
+          <td><span class="svc-tag">${a.name}</span></td>
+          <td>${a.when}</td>
+          <td class="${costClass}">${a.cost}</td>
+        </tr>`;
+      }).join('');
+
+      const costItems = svc.costs.map((c, i) => `
+        <li>
+          <span class="cost-dot">${i+1}</span>
+          <span>${c}</span>
+        </li>`).join('');
+
+      const tagHtml = svc.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+      html += `
+      <div class="service-card">
+        <div class="card-header" id="hdr-${svc.id}" onclick="toggleCard('${svc.id}')">
+          <div>
+            <div class="svc-name">${svc.name} <span class="svc-sub">— ${svc.sub}</span></div>
+          </div>
+          ${badges.join('')}
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+        </div>
+        <div class="card-body" id="bdy-${svc.id}">
+          <div class="tabs">
+            <div class="tab active" data-card="${svc.id}" data-tab="overview" onclick="switchTab('${svc.id}','overview')">Overview</div>
+            <div class="tab" data-card="${svc.id}" data-tab="arch" onclick="switchTab('${svc.id}','arch')">Architecture</div>
+            <div class="tab" data-card="${svc.id}" data-tab="costs" onclick="switchTab('${svc.id}','costs')">Cost Tips</div>
+            <div class="tab" data-card="${svc.id}" data-tab="alts" onclick="switchTab('${svc.id}','alts')">Alternatives</div>
+          </div>
+
+          <div class="tab-panel active" data-card="${svc.id}" data-tab="overview">
+            <div class="what-box">${svc.what}</div>
+            <div style="margin-top:10px"></div>
+            <div class="scenario-box">${svc.scenario}</div>
+            <div class="tag-row">${tagHtml}</div>
+          </div>
+
+          <div class="tab-panel" data-card="${svc.id}" data-tab="arch">
+            <div class="arch-flow">${buildArch(svc.arch)}</div>
+          </div>
+
+          <div class="tab-panel" data-card="${svc.id}" data-tab="costs">
+            <ul class="cost-tips">${costItems}</ul>
+          </div>
+
+          <div class="tab-panel" data-card="${svc.id}" data-tab="alts">
+            <table class="alt-table">
+              <thead><tr><th>Alternative</th><th>When to choose it</th><th>Cost vs ${svc.name}</th></tr></thead>
+              <tbody>${altsRows}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderOverlaps() {
+  let html = `<div style="margin-bottom:28px">
+    <div style="font-family:'Syne',var(--font-sans);font-size:16px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:8px">
+      🔀 Service Overlap Decision Guide
+    </div>`;
+
+  OVERLAPS.forEach(ov => {
+    html += `<div class="overlap-box">
+      <h3>🔀 ${ov.title}</h3>
+      <div class="overlap-grid">`;
+    ov.items.forEach(item => {
+      html += `<div class="overlap-item">
+        <h4>${item.name}</h4>
+        <p>${item.desc}</p>
+      </div>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderCheatSheet() {
+  const el = document.getElementById('cheatSheet');
+  el.innerHTML = `
+  <div style="font-family:'Syne',var(--font-sans);font-size:18px;font-weight:800;margin-bottom:16px;padding:16px 0 10px;border-top:0.5px solid var(--border)">
+    💰 AWS Cost Optimization Cheat Sheet
+  </div>
+
+  ${renderOverlaps()}
+
+  <div class="cheat-section">
+    <div class="cheat-header">
+      <div style="font-size:18px">📊</div>
+      <h3>Reserved vs Spot vs On-Demand Decision Matrix</h3>
+    </div>
+    <div class="cheat-body">
+      <table class="decision-matrix">
+        <thead><tr><th>Pricing Model</th><th>Savings vs On-Demand</th><th>Use When</th><th>Risk</th></tr></thead>
+        <tbody>
+          <tr><td><span class="type-od">On-Demand</span></td><td>Baseline ($)</td><td>Unpredictable traffic, short experiments, new workloads</td><td>None — flexible</td></tr>
+          <tr><td><span class="type-ri">Reserved (1-yr)</span></td><td>Up to 40%</td><td>Stable baseline workloads running 24/7 (databases, always-on APIs)</td><td>Committed spend even if unused</td></tr>
+          <tr><td><span class="type-ri">Reserved (3-yr)</span></td><td>Up to 66%</td><td>Very stable long-lived workloads (RDS, ElastiCache)</td><td>High commitment, low flexibility</td></tr>
+          <tr><td><span class="type-sp">Compute Savings Plan</span></td><td>Up to 66%</td><td>Flexible EC2 + Fargate + Lambda baseline (best of RI + flexibility)</td><td>$/hr commitment, no instance lock-in</td></tr>
+          <tr><td><span class="type-sp">Spot Instances</span></td><td>Up to 90%</td><td>Fault-tolerant, stateless batch/ML training, CI/CD workers</td><td>2-min interruption notice; reclaim risk</td></tr>
+          <tr><td><span class="type-sp">Spot + OD Mix</span></td><td>60–70%</td><td>Auto Scaling Groups: Spot for burst capacity + OD for baseline</td><td>Moderate; graceful degradation needed</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="cheat-section">
+    <div class="cheat-header">
+      <div style="font-size:18px">📐</div>
+      <h3>Right-Sizing Strategy</h3>
+    </div>
+    <div class="cheat-body" style="font-size:13px;line-height:1.8;color:var(--muted)">
+      <p>1. <strong style="color:var(--text)">Enable AWS Compute Optimizer</strong> — free service that analyzes EC2, Lambda, ECS, and EBS metrics to recommend right-sized alternatives. Typical finding: 40–60% of EC2 are over-provisioned.</p>
+      <p style="margin-top:8px">2. <strong style="color:var(--text)">Target CPU/Memory utilization</strong>: EC2 general workloads: aim 40–70% avg CPU. Below 20% avg → downsize. Above 80% avg → upsize or scale out.</p>
+      <p style="margin-top:8px">3. <strong style="color:var(--text)">Modern instance families</strong>: m6i/c6i/r6i are 10–15% cheaper than m5/c5/r5 per vCPU. Graviton (m6g/c6g) 20% cheaper than x86 equivalents for compatible workloads.</p>
+      <p style="margin-top:8px">4. <strong style="color:var(--text)">Lambda right-sizing</strong>: Use AWS Lambda Power Tuning (open source) to find optimal memory configuration — more memory can actually reduce duration × price even for CPU-bound functions.</p>
+      <p style="margin-top:8px">5. <strong style="color:var(--text)">Database right-sizing</strong>: Use Performance Insights to identify query bottlenecks before assuming you need more instance size. Caching (ElastiCache) often defers a database upgrade 6–12 months.</p>
+    </div>
+  </div>
+
+  <div class="cheat-section">
+    <div class="cheat-header">
+      <div style="font-size:18px">🗂️</div>
+      <h3>Storage Tiering Best Practices</h3>
+    </div>
+    <div class="cheat-body">
+      <table class="decision-matrix">
+        <thead><tr><th>Tier</th><th>Cost/GB/mo</th><th>Access Pattern</th><th>Retrieval Time</th></tr></thead>
+        <tbody>
+          <tr><td>S3 Standard</td><td style="color:#E24B4A;font-weight:600">$0.023</td><td>Frequently accessed (daily/weekly)</td><td>Immediate</td></tr>
+          <tr><td>S3 Intelligent-Tiering</td><td style="color:#FF9900;font-weight:600">$0.023 + $0.0025/obj</td><td>Unknown/variable access pattern</td><td>Immediate</td></tr>
+          <tr><td>S3 Standard-IA</td><td style="color:#FF9900;font-weight:600">$0.0125</td><td>Monthly access, 30-day minimum</td><td>Immediate</td></tr>
+          <tr><td>S3 One Zone-IA</td><td style="color:#1D9E75;font-weight:600">$0.01</td><td>Reproducible data, single AZ OK</td><td>Immediate</td></tr>
+          <tr><td>Glacier Instant</td><td style="color:#1D9E75;font-weight:600">$0.004</td><td>Quarterly access, compliance archive</td><td>Milliseconds</td></tr>
+          <tr><td>Glacier Flexible</td><td style="color:#1D9E75;font-weight:600">$0.0036</td><td>Annual access, bulk archive</td><td>3–5 hours</td></tr>
+          <tr><td>Glacier Deep Archive</td><td style="color:#1D9E75;font-weight:600">$0.00099</td><td>Once every 5–7 years, true cold archive</td><td>12 hours</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:12px;color:var(--hint);margin-top:10px">Rule: Use S3 Lifecycle Rules to automate tiering. Don't leave data in Standard indefinitely. S3 Standard → Glacier Deep Archive = 96% cost reduction.</p>
+    </div>
+  </div>
+
+  <div class="cheat-section">
+    <div class="cheat-header">
+      <div style="font-size:18px">🚧</div>
+      <h3>Data Transfer Cost Traps</h3>
+    </div>
+    <div class="cheat-body" style="font-size:13px;line-height:1.8;color:var(--muted)">
+      <p>🔴 <strong style="color:var(--text)">EC2/RDS → Internet</strong>: $0.09/GB — the most expensive egress. Use CloudFront ($0.0085/GB) to front any public-facing content.</p>
+      <p>🔴 <strong style="color:var(--text)">Cross-Region transfer</strong>: $0.02/GB — avoid cross-region architectures for high-bandwidth workloads unless required for DR/compliance.</p>
+      <p>🟡 <strong style="color:var(--text)">Cross-AZ transfer</strong>: $0.01/GB — keep app and database tiers in the same AZ for high-bandwidth internal traffic.</p>
+      <p>🟡 <strong style="color:var(--text)">NAT Gateway</strong>: $0.045/GB + $0.045/hr — use VPC Endpoints for S3 and DynamoDB (free) to bypass NAT.</p>
+      <p>🟢 <strong style="color:var(--text)">Same-AZ transfer</strong>: Free. Same-region S3 to EC2: Free. CloudFront to S3: Free.</p>
+      <p>🟢 <strong style="color:var(--text)">Inbound internet → AWS</strong>: Free. Free Transfer: between AWS services in same region and AZ.</p>
+    </div>
+  </div>
+
+  <div class="cheat-section">
+    <div class="cheat-header">
+      <div style="font-size:18px">⚠️</div>
+      <h3>Top 5 Most Over-Provisioned Services & Fixes</h3>
+    </div>
+    <div class="cheat-body">
+      <table class="decision-matrix">
+        <thead><tr><th>#</th><th>Service</th><th>Common Waste</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td style="color:var(--aws-orange);font-weight:700">1</td><td>EC2</td><td>40–60% oversized; dev instances running 24/7</td><td>Compute Optimizer + Savings Plans + auto-shutdown schedules</td></tr>
+          <tr><td style="color:var(--aws-orange);font-weight:700">2</td><td>RDS / Aurora</td><td>Multi-AZ in dev; oversized instances; unused read replicas</td><td>Single-AZ in dev; Reserved Instances; right-size with Performance Insights</td></tr>
+          <tr><td style="color:var(--aws-orange);font-weight:700">3</td><td>NAT Gateway</td><td>All private EC2 traffic routing through NAT to S3/DynamoDB</td><td>Add VPC Gateway Endpoints for S3 and DynamoDB (free, saves $0.045/GB)</td></tr>
+          <tr><td style="color:var(--aws-orange);font-weight:700">4</td><td>CloudWatch Logs</td><td>Lambda/ECS verbose debug logs in prod with no retention policy</td><td>Set 30–90 day retention; filter log level at source; export to S3</td></tr>
+          <tr><td style="color:var(--aws-orange);font-weight:700">5</td><td>EBS gp2 Volumes</td><td>Legacy gp2 volumes (20% pricier than gp3 with fewer features)</td><td>Migrate all gp2 → gp3 (free, same or better performance, 20% cheaper)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  `;
+}
+
+function renderDecisionFlow() {
+  const el = document.getElementById('decisionFlow');
+  el.innerHTML = `
+  <div style="font-family:'Syne',var(--font-sans);font-size:18px;font-weight:800;margin-bottom:16px;padding:16px 0 10px;border-top:0.5px solid var(--border)">
+    🗺️ Quick Decision Framework
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Use this flowchart when selecting services under cost or architecture pressure.</p>
+  <div class="flow-wrap"><span class="q">WHAT ARE YOU BUILDING?</span>
+<span class="hr">────────────────────────────────────────────────────────────────</span>
+<span class="q">├─ COMPUTE</span>
+<span class="q">│  ├─ Stateless, event-driven, < 15 min?</span>         → <span class="svc">Lambda</span>       ✅ cheapest
+<span class="q">│  ├─ Containers, long-running, variable traffic?</span>  → <span class="svc">ECS Fargate</span>  simple ops
+<span class="q">│  ├─ Containers, large scale, k8s ecosystem?</span>     → <span class="svc">EKS + Karpenter</span>
+<span class="q">│  ├─ Lift-and-shift, OS control, GPU needed?</span>     → <span class="svc">EC2</span>          + Savings Plan
+<span class="q">│  └─ Simple web app < 1K users?</span>                 → <span class="svc">Lightsail</span>    flat pricing
+<span class="hr">│</span>
+<span class="q">├─ STORAGE</span>
+<span class="q">│  ├─ Objects, files, backups, data lake?</span>         → <span class="svc">S3</span>           + lifecycle rules
+<span class="q">│  ├─ EC2 block storage (databases)?</span>             → <span class="svc">EBS gp3</span>      not gp2!
+<span class="q">│  ├─ Shared filesystem, multiple EC2 mounts?</span>    → <span class="svc">EFS</span>          ⚠️ pricey
+<span class="q">│  └─ Cold archive, years of retention?</span>          → <span class="svc">Glacier Deep</span> $0.001/GB
+<span class="hr">│</span>
+<span class="q">├─ DATABASE</span>
+<span class="q">│  ├─ SQL, OLTP, familiar schema?</span>
+<span class="q">│  │  ├─ < 10TB, standard workload?</span>              → <span class="svc">RDS PostgreSQL</span>
+<span class="q">│  │  └─ High perf, global, serverless scaling?</span>  → <span class="svc">Aurora</span>
+<span class="q">│  ├─ NoSQL, key-value, > 100K TPS?</span>              → <span class="svc">DynamoDB</span>     ⚠️ watch GSIs
+<span class="q">│  ├─ Caching, session store, < 1ms latency?</span>     → <span class="svc">ElastiCache</span>  ✅
+<span class="q">│  └─ Analytics / data warehouse?</span>               → <span class="svc">Redshift Serverless</span>
+<span class="hr">│</span>
+<span class="q">├─ NETWORKING / API</span>
+<span class="q">│  ├─ CDN for static/dynamic content?</span>            → <span class="svc">CloudFront</span>   ✅ 89% cheaper egress
+<span class="q">│  ├─ API for Lambda/HTTP backend?</span>
+<span class="q">│  │  ├─ Simple proxy, cost matters?</span>             → <span class="svc">API GW HTTP API</span>  $1/M
+<span class="q">│  │  └─ Need caching, keys, usage plans?</span>        → <span class="svc">API GW REST API</span>  $3.5/M
+<span class="q">│  ├─ Container/EC2 load balancing?</span>              → <span class="svc">ALB</span>          cheaper at scale
+<span class="q">│  └─ Global TCP/UDP, static IPs, gaming?</span>        → <span class="svc">Global Accelerator</span>
+<span class="hr">│</span>
+<span class="q">├─ MESSAGING</span>
+<span class="q">│  ├─ Single consumer async queue?</span>               → <span class="svc">SQS Standard</span> ✅ $0.40/M
+<span class="q">│  ├─ Fan-out to multiple services?</span>              → <span class="svc">SNS → SQS</span>    fan-out pattern
+<span class="q">│  ├─ Content-based routing, SaaS events?</span>        → <span class="svc">EventBridge</span>  ✅
+<span class="q">│  ├─ Complex multi-step workflow?</span>               → <span class="svc">Step Functions</span>
+<span class="q">│  └─ Real-time stream, ordered, replay?</span>         → <span class="svc">Kinesis</span>      ⚠️ shard costs
+<span class="hr">│</span>
+<span class="q">├─ ANALYTICS</span>
+<span class="q">│  ├─ Ad-hoc S3 queries, pay-per-scan?</span>           → <span class="svc">Athena</span>       ✅ use Parquet!
+<span class="q">│  ├─ Heavy BI, consistent performance?</span>          → <span class="svc">Redshift</span>
+<span class="q">│  ├─ Real-time streaming analytics?</span>             → <span class="svc">Kinesis Analytics</span>
+<span class="q">│  └─ Serverless ETL, data catalog?</span>              → <span class="svc">Glue</span>         ⚠️ min 1-min billing
+<span class="hr">│</span>
+<span class="q">├─ SECURITY</span>
+<span class="q">│  ├─ Credential storage, auto-rotation?</span>         → <span class="svc">Secrets Manager</span>  $0.40/secret
+<span class="q">│  ├─ Config/secrets, no rotation needed?</span>        → <span class="svc">SSM Param Store</span>  $0.05 ✅
+<span class="q">│  ├─ Block OWASP attacks, rate limiting?</span>        → <span class="svc">WAF</span>
+<span class="q">│  └─ Audit trail, compliance?</span>                  → <span class="svc">CloudTrail + Config</span>
+<span class="hr">│</span>
+<span class="q">└─ AI / ML</span>
+<span class="q">   ├─ Use foundation models (LLM, vision)?</span>       → <span class="svc">Bedrock</span>      ✅ pay-per-token
+<span class="q">   ├─ Train custom models, MLOps pipeline?</span>       → <span class="svc">SageMaker</span>    use Spot training
+<span class="q">   └─ Image recognition, OCR, NLP (prebuilt)?</span>   → <span class="svc">Rekognition/Textract/Comprehend</span>
+<span class="hr">────────────────────────────────────────────────────────────────</span>
+<span class="a">COST PRESSURE EMERGENCY KIT:</span>
+<span class="a">1.</span> <span class="svc">Enable Compute Optimizer</span> → find over-provisioned EC2/Lambda instantly
+<span class="a">2.</span> <span class="svc">Check NAT Gateway bills</span>  → add S3/DynamoDB VPC Endpoints (free)
+<span class="a">3.</span> <span class="svc">Migrate gp2 → gp3 EBS</span>  → 20% savings, zero downtime
+<span class="a">4.</span> <span class="svc">Set log retention policies</span> → cap CloudWatch Logs at 30–90 days
+<span class="a">5.</span> <span class="svc">Purchase 1-yr Savings Plan</span> → 40–66% off stable EC2/Lambda baseline</div>
+  `;
+}
+
+// Build TOC
+function buildTOC() {
+  const grid = document.getElementById('tocGrid');
+  const jump = document.getElementById('jumpBar');
+
+  CATEGORIES.forEach((cat, i) => {
+    const item = document.createElement('div');
+    item.className = 'toc-item';
+    item.innerHTML = `<span class="toc-num">${i+1}</span>${cat.icon} ${cat.name}`;
+    item.onclick = () => scrollToSection(cat.id);
+    grid.appendChild(item);
+
+    const btn = document.createElement('button');
+    btn.className = 'jump-btn';
+    btn.textContent = cat.name;
+    btn.onclick = () => scrollToSection(cat.id);
+    jump.appendChild(btn);
+  });
+
+  // Add cheat sheet link
+  const csItem = document.createElement('div');
+  csItem.className = 'toc-item';
+  csItem.innerHTML = `<span class="toc-num">💰</span>💡 Cost Cheat Sheet`;
+  csItem.onclick = () => document.getElementById('cheatSheet').scrollIntoView({behavior:'smooth'});
+  grid.appendChild(csItem);
+}
+
+buildTOC();
+renderServices();
+renderCheatSheet();
+renderDecisionFlow();
+</script>
+</body>
+</html>
